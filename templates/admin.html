@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Notes Sharing Portal - Admin</title>
+    {# Include Tailwind CSS with plugins and custom color config #}
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-navy': { // Define a custom color named 'primary-navy'
+                            50: '#eef2ff',    // Lighter shade
+                            100: '#e0e7ff',   // Lighter shade
+                            200: '#c7d2fe',   // Lighter shade
+                            300: '#a5b4fc',   // Lighter shade
+                            400: '#818cf8',   // Medium shade
+                            500: '#6366f1',   // Medium shade
+                            600: '#4f46e5',   // Medium shade
+                            700: '#4338ca',   // Darker shade
+                            800: '#3730a3',   // Darker shade
+                            900: '#312e81',   // Darker shade
+                            950: '#1e1b4b',   // Darkest shade
+                            DEFAULT: '#5a67d8', // Our navy blue primary color
+                        },
+                         // Adding other palettes for theme consistency (teal, purple, red)
+                        'primary-teal': {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf2c9',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#0f3a21',
+                        },
+                         'primary-purple': {
+                             50: '#faf5ff',
+                             100: '#f3e8ff',
+                             200: '#e9d5ff',
+                             300: '#d8b4fe',
+                             400: '#c084fc',
+                             500: '#a78bfa',
+                             600: '#9333ea',
+                             700: '#7e22ce',
+                             800: '#6b21a8',
+                             900: '#581c87',
+                             950: '#3b0764',
+                         },
+                         'primary-red': {
+                             50: '#fef2f2',
+                             100: '#fee2e2',
+                             200: '#fecaca',
+                             300: '#fca5a5',
+                             400: '#f87171',
+                             500: '#ef4444',
+                             600: '#dc2626',
+                             700: '#b91c1c',
+                             800: '#991b1b',
+                             900: '#7f1d1d',
+                             950: '#450a0a',
+                         }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBgzWkkmhxwOBGgFAWVLwVYlrwksG/g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* --- Variables --- */
+        :root {
+            --primary-color: #5a67d8; /* Our modern navy blue */
+            --primary-color-dark: #4c51bf;
+            --background-color: #dfebff; /* Light clean background */
+            --card-background: #ffffff; /* White */
+            --text-color-dark: #2d3748; /* Darker text for better contrast */
+            --text-color-light: #4a5568;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+
+            /* Button colors */
+            --button-danger-bg: #dc3545; /* Red for logout */
+            --button-danger-bg-hover: #c82333;
+
+            /* Card specific colors (matching the Teacher/Student panels) */
+            --card-manage-sections-bg: #e0e7ff; /* Light blueish-purple */
+            --card-manage-sections-border: #c5cbe9;
+            --card-register-teachers-bg: #e0f7fa; /* Light blueish */
+            --card-register-teachers-border: #b2ebf2;
+            --card-view-teachers-bg: #e8eaf6; /* Light purplish */
+            --card-view-teachers-border: #c5cbe9;
+            --card-view-students-bg: #ffebee; /* Light red */
+            --card-view-students-border: #ffcdd2;
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif; /* Use Poppins for consistency */
+            background: linear-gradient(to bottom right, #eef2ff, #e0e7ff); /* Consistent subtle gradient */
+            margin: 0;
+            padding: var(--spacing-md); /* Adjusted padding */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            line-height: 1.6; /* Improved readability */
+            box-sizing: border-box;
+            position: relative; /* Needed for fixed logout button */
+             /* Add padding-top to body to prevent fixed button from overlapping content */
+            padding-top: calc(var(--spacing-md) + 40px); /* Adjust based on button height and spacing */
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+             color: var(--text-color-dark); /* Ensure headings use the dark text color variable */
+             /* Tailwind classes handle font size, weight, and margin */
+        }
+
+        p {
+             color: var(--text-color-light); /* Ensure paragraphs use the light text color variable */
+             /* Tailwind classes handle font size and margin */
+        }
+
+
+        /* --- Layout --- */
+         /* The main container is handled by Tailwind classes: max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-6 md:p-8 */
+
+
+        /* --- Components --- */
+        /* Styling the custom logout button - visual styles here, positioning via Tailwind classes in HTML */
+        .logout-button {
+            /* Positioning handled by Tailwind classes: fixed top-4 right-4 */
+            /* Appearance handled by Tailwind classes: bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md */
+
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Keep transition */
+            text-decoration: none; /* Remove underline */
+            display: inline-flex; /* Align icon and text */
+            align-items: center;
+            z-index: 100; /* Ensure it's on top of everything, increased z-index */
+            border: none; /* Remove default button border */
+            cursor: pointer; /* Add cursor pointer */
+
+             /* Applying consistent button styles */
+             background-color: var(--button-danger-bg);
+             color: white;
+             font-weight: 600;
+             padding: 10px 15px;
+             border-radius: var(--border-radius);
+             box-shadow: var(--shadow-light);
+        }
+
+
+        .logout-button:hover {
+             background-color: var(--button-danger-bg-hover); /* Darker red on hover */
+             box-shadow: var(--shadow-medium);
+        }
+
+        .logout-button i {
+             margin-right: var(--spacing-xs); /* Consistent space for icon */
+        }
+
+        /* Styling the main heading */
+        .main-heading {
+            text-align: center;
+            color: var(--primary-color); /* Primary color */
+            font-weight: 700;
+            font-size: 3.0rem; /* Consistent large size */
+            margin-bottom: var(--spacing-md); /* Consistent spacing */
+        }
+
+        /* Styling the introductory paragraph */
+        .intro-paragraph {
+            color: var(--text-color-light);
+            text-align: center;
+            margin-bottom: var(--spacing-lg); /* Consistent spacing */
+            font-size: 1.1em;
+        }
+
+        /* Styling for the individual feature cards */
+        .feature-card {
+            display: flex;
+            align-items: flex-start; /* Align items to the top */
+            gap: var(--spacing-md); /* Consistent gap between icon and content */
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            border: 1px solid transparent; /* Add transparent border */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px); /* Consistent hover effect */
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Specific background and border colors for each card */
+        .feature-card.manage-sections-card {
+            background-color: var(--card-manage-sections-bg);
+            border-color: var(--card-manage-sections-border);
+        }
+
+        .feature-card.register-teachers-card {
+            background-color: var(--card-register-teachers-bg);
+            border-color: var(--card-register-teachers-border);
+        }
+
+        .feature-card.view-teachers-card {
+            background-color: var(--card-view-teachers-bg);
+            border-color: var(--card-view-teachers-border);
+        }
+
+         .feature-card.view-students-card {
+             background-color: var(--card-view-students-bg);
+             border-color: var(--card-view-students-border);
+         }
+
+
+        .feature-card i { /* Styling the main icon */
+            font-size: 1.8em; /* Larger icon size */
+            flex-shrink: 0; /* Prevent icon from shrinking */
+        }
+
+        /* Icon colors for each card type */
+        .manage-sections-card i { color: #5a67d8; } /* Primary color */
+        .register-teachers-card i { color: #00a88a; } /* Green */
+        .view-teachers-card i { color: #4c51bf; } /* Darker primary */
+        .view-students-card i { color: #dc3545; } /* Red */
+
+
+        .feature-card h3 { /* Styling the card title */
+            font-size: 1.25em;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs); /* Consistent spacing */
+            color: var(--text-color-dark); /* Dark text color */
+        }
+
+        /* Card title colors for each card type (optional, using dark text color for consistency) */
+        .manage-sections-card h3 { color: #4338ca; } /* Darker primary */
+        .register-teachers-card h3 { color: #16a34a; } /* Darker green */
+        .view-teachers-card h3 { color: #3730a3; } /* Even darker primary */
+         .view-students-card h3 { color: #c82333; } /* Darker red */
+
+
+        .feature-card p { /* Styling the card description */
+            font-size: 0.95em;
+            color: var(--text-color-light);
+            margin-bottom: var(--spacing-sm); /* Consistent spacing */
+            text-align: left; /* Align description left */
+        }
+
+        .feature-card a { /* Styling the link */
+            display: inline-block;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease-in-out;
+            font-size: 0.9em; /* Slightly smaller link text */
+        }
+
+        /* Link colors for each card type */
+        .manage-sections-card a { color: #5a67d8; } /* Primary color */
+        .manage-sections-card a:hover { color: #4c51bf; }
+        .register-teachers-card a { color: #00b894; } /* Green */
+        .register-teachers-card a:hover { color: #00a88a; }
+        .view-teachers-card a { color: #5a67d8; } /* Primary color */
+        .view-teachers-card a:hover { color: #4c51bf; }
+         .view-students-card a { color: #dc3545; } /* Red */
+         .view-students-card a:hover { color: #c82333; }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-sm);
+                 padding-top: calc(var(--spacing-sm) + 40px); /* Adjust body padding-top */
+            }
+            .main-container {
+                padding: var(--spacing-sm);
+                max-width: 95%; /* Allow wider on smaller screens */
+            }
+            .main-heading {
+                font-size: 2.2rem; /* Adjusted for medium screens */
+                margin-bottom: var(--spacing-md);
+            }
+            .intro-paragraph {
+                font-size: 1em;
+                margin-bottom: var(--spacing-md);
+            }
+            .feature-card {
+                flex-direction: column; /* Stack icon and content vertically */
+                align-items: center; /* Center items when stacked */
+                text-align: center; /* Center text when stacked */
+                gap: var(--spacing-sm); /* Reduced gap */
+            }
+             .feature-card i {
+                 margin-bottom: var(--spacing-xs); /* Add space below icon when stacked */
+             }
+            .feature-card h3,
+            .feature-card p {
+                text-align: center; /* Ensure text is centered when stacked */
+            }
+            .feature-card h3 {
+                font-size: 1.1em; /* Reduced title size */
+            }
+            .feature-card p {
+                font-size: 0.9em; /* Reduced description size */
+            }
+            .feature-card a {
+                font-size: 0.85em; /* Reduced link size */
+            }
+            .logout-button { /* Adjust fixed button position */
+                padding: 8px 12px;
+                font-size: 0.9em;
+                top: 10px;
+                right: 10px;
+            }
+             .logout-button i {
+                 margin-right: 6px;
+             }
+        }
+
+         @media (max-width: 480px) {
+             body {
+                 padding: var(--spacing-xs);
+                  padding-top: calc(var(--spacing-xs) + 40px); /* Adjust body padding-top */
+             }
+             .main-container {
+                 padding: var(--spacing-xs);
+             }
+             .main-heading {
+                 font-size: 1.7rem; /* Adjusted for small screens */
+                 margin-bottom: var(--spacing-md);
+             }
+             .intro-paragraph {
+                 font-size: 0.95em;
+                 margin-bottom: var(--spacing-md);
+             }
+             .feature-card {
+                 padding: var(--spacing-sm); /* Reduced padding */
+                 gap: var(--spacing-xs); /* Reduced gap */
+             }
+             .feature-card i {
+                 font-size: 1.5em; /* Adjusted icon size */
+                 margin-bottom: 4px; /* Adjusted space below icon */
+             }
+             .feature-card h3 {
+                 font-size: 1em;
+             }
+             .feature-card p {
+                 font-size: 0.85em;
+             }
+             .feature-card a {
+                 font-size: 0.8em;
+             }
+             .logout-button { /* Adjust fixed button position */
+                 padding: 6px 10px;
+                 font-size: 0.85em;
+                 top: 8px;
+                 right: 8px;
+             }
+              .logout-button i {
+                  margin-right: 4px;
+              }
+         }
+    </style>
+</head>
+<body class="relative">
+    {# Modified logout button with Tailwind classes for positioning and core appearance #}
+    <a href="{{ url_for('logout') }}" class="logout-button fixed top-4 right-4">
+        <i class="fa-solid fa-sign-out-alt"></i> Logout
+    </a>
+    {# Added body padding to prevent content from being hidden by the fixed button #}
+    {# This div adds space at the top #}
+    <div class="pt-16 md:pt-20"></div>
+
+    {# Added mx-auto class here to center the block element #}
+    <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-6 md:p-8">
+        {# Updated main title text color #}
+        <h1 class="main-heading">
+            Admin Panel
+        </h1>
+        {# Removed text-center class here to left-align the paragraph #}
+        <p class="intro-paragraph">
+            As an administrator, you have the power to manage the core aspects of the College Notes Sharing Portal. Here's a glimpse of what you can do:
+        </p>
+
+        <div class="space-y-6">
+            {# Updated Key Features card background, border, and heading color #}
+            <div class="feature-card manage-sections-card">
+                <i class="fa-solid fa-layer-group"></i>
+                {# Added flex-1 Tailwind class here for content to grow #}
+                <div class="flex-1">
+                    <h3>⚙️ Manage Academic Sections</h3>
+                    <p>
+                        Create, modify, and organize academic sections (e.g., semesters, departments, subjects) to structure the notes effectively.
+                    </p>
+                    {# Updated link color #}
+                    <a href="{{ url_for('create_section') }}">Go to Manage Sections</a>
+                </div>
+            </div>
+
+            {# Register New Teachers Card #}
+            <div class="feature-card register-teachers-card">
+                <i class="fa-solid fa-user-plus"></i>
+                 {# Added flex-1 Tailwind class here for content to grow #}
+                <div class="flex-1">
+                    <h3>📃Register New Teachers</h3>
+                    <p>
+                        Onboard new faculty members to the platform, granting them the ability to upload and manage notes for their respective courses.
+                    </p>
+                    <a href="{{ url_for('register') }}">Register Teachers</a>
+                </div>
+            </div>
+
+            {# View All Teachers Card #}
+            <div class="feature-card view-teachers-card">
+                <i class="fa-solid fa-chalkboard-user"></i>
+                 {# Added flex-1 Tailwind class here for content to grow #}
+                <div class="flex-1">
+                    <h3>👨🏽‍🏫 View All Teachers</h3>
+                    <p>
+                        Get a comprehensive list of all registered teachers on the platform, along with their associated information.
+                    </p>
+                    <a href="{{ url_for('show_teachers') }}">See All Teachers</a>
+                </div>
+            </div>
+
+            {# View All Students Card #}
+            <div class="feature-card view-students-card">
+                <i class="fa-solid fa-graduation-cap"></i>
+                 {# Added flex-1 Tailwind class here for content to grow #}
+                <div class="flex-1">
+                    <h3>👨🏽‍🎓 View All Students</h3>
+                    <p>
+                        Access a complete directory of all students registered on the portal.
+                    </p>
+                    <a href="{{ url_for('show_students') }}">See All Students</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Group Type</title>
+    {# Link to Poppins font #}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    {# Link to Font Awesome for icons if needed later #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBgzWkkmhxwOBGgFAWVLwVYlrwksG/g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* --- Variables --- */
+        :root {
+            --primary-color: #5a67d8; /* Our modern navy blue */
+            --primary-color-dark: #4c51bf;
+            --background-color: #f7fafc; /* Light clean background */
+            --card-background: #ffffff; /* White */
+            --text-color-dark: #2d3748; /* Darker text for better contrast */
+            --text-color-light: #4a5568;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+
+             /* Button specific colors */
+             --button-secondary-bg: #6c757d; /* Grey for back button */
+             --button-secondary-bg-hover: #5a6268;
+
+             /* Alert colors (matching Upload Response) */
+             --alert-success-bg: #d4edda;
+             --alert-success-color: #155724;
+             --alert-success-border: #c3e6cb;
+
+             --alert-error-bg: #f8d7da;
+             --alert-error-color: #721c24;
+             --alert-error-border: #f5c6cb;
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif; /* Use Poppins */
+            background: linear-gradient(to bottom right, var(--background-color), #e2e8f0); /* Consistent subtle gradient */
+            margin: 0;
+            padding: var(--spacing-lg) var(--spacing-md); /* Add vertical and horizontal padding */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            line-height: 1.6;
+            box-sizing: border-box;
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color-dark); /* Ensure headings use the dark text color variable */
+            font-weight: 700; /* Consistent bold weight for headings */
+            margin-top: 0;
+        }
+
+        p {
+             color: var(--text-color-light); /* Ensure paragraphs use the light text color variable */
+        }
+
+        /* --- Layout --- */
+        .container {
+            width: 100%;
+            max-width: 600px; /* Adjusted max-width for consistency */
+            margin-top: var(--spacing-md); /* Consistent top margin */
+            padding: var(--spacing-md); /* Consistent padding inside container */
+            background-color: var(--card-background); /* White background */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            box-shadow: var(--shadow-medium); /* Consistent shadow */
+            position: relative;
+            z-index: 1;
+            border: 1px solid #eee; /* Add a light border */
+        }
+
+        /* --- Components --- */
+
+        /* Style for the back button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            background-color: var(--button-secondary-bg); /* Use grey color variable */
+            color: white; /* White text for grey button */
+            padding: 10px 16px; /* Consistent padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            margin-bottom: var(--spacing-lg); /* Consistent spacing below button */
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Consistent transition */
+            font-weight: 600; /* Consistent bold weight */
+            border: none; /* Remove default border */
+            box-shadow: var(--shadow-light); /* Add a light shadow */
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .back-btn:hover {
+            background-color: var(--button-secondary-bg-hover); /* Darker grey on hover */
+            box-shadow: var(--shadow-medium);
+        }
+
+        .back-btn svg {
+            margin-right: var(--spacing-xs); /* Consistent space for icon */
+            transition: margin-right 0.2s ease-in-out;
+        }
+
+        .back-btn:hover svg {
+            margin-right: var(--spacing-sm); /* Slightly larger margin on hover */
+        }
+
+
+        /* Style for the main heading */
+        h2 {
+            margin-top: 0;
+            margin-bottom: var(--spacing-lg); /* Consistent spacing below heading */
+            color: var(--text-color-dark); /* Use dark text color variable */
+            text-align: center;
+            font-size: 2.2rem; /* Consistent heading size */
+            font-weight: 700; /* Consistent bold weight */
+            border-bottom: 2px solid var(--primary-color); /* Add primary color underline */
+            padding-bottom: var(--spacing-xs); /* Add padding below underline */
+        }
+
+        /* Style for the flash message container */
+        .flash-messages {
+            width: 100%;
+            margin-bottom: var(--spacing-md); /* Consistent spacing below messages */
+        }
+
+        /* Style for individual alert messages */
+        .alert {
+            padding: var(--spacing-sm) var(--spacing-md); /* Consistent padding */
+            margin-bottom: var(--spacing-sm); /* Consistent spacing between alerts */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            font-weight: 600; /* Bolder text */
+            display: flex;
+            align-items: center;
+            box-shadow: var(--shadow-light); /* Add shadow to alerts */
+        }
+
+        /* Specific styles for alert categories */
+        .alert-success {
+            background-color: var(--alert-success-bg); /* Use success color variable */
+            color: var(--alert-success-color); /* Use success text color variable */
+            border: 1px solid var(--alert-success-border); /* Use success border color variable */
+        }
+
+        .alert-error {
+            background-color: var(--alert-error-bg); /* Use error color variable */
+            color: var(--alert-error-color); /* Use error text color variable */
+            border: 1px solid var(--alert-error-border); /* Use error border color variable */
+        }
+
+        .alert svg {
+            margin-right: var(--spacing-sm); /* Consistent spacing for icon */
+            min-width: 20px; /* Prevent icon shrinking */
+        }
+
+        /* Style for the card container (grid) */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Keep original minmax */
+            gap: var(--spacing-md); /* Consistent gap */
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Style for the individual cards */
+        .card {
+            padding: var(--spacing-lg) var(--spacing-md); /* Consistent vertical and horizontal padding */
+            background-color: var(--card-background); /* White background */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            box-shadow: var(--shadow-light); /* Consistent shadow */
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card:hover {
+            transform: translateY(-10px); /* Consistent lift effect */
+            box-shadow: var(--shadow-medium); /* Consistent shadow on hover */
+            border-color: var(--primary-color); /* Primary color border on hover */
+        }
+
+        /* Style for the icon container within the card */
+        .card .icon {
+            margin-bottom: var(--spacing-md); /* Consistent spacing below icon */
+            color: var(--primary-color); /* Primary color for icon */
+        }
+
+        .card .icon svg {
+            width: 48px; /* Consistent icon size */
+            height: 48px;
+        }
+
+        /* Style for the card title */
+        .card h3 {
+            margin: 0;
+            color: var(--text-color-dark); /* Dark text color for title */
+            font-size: 1.4rem; /* Consistent card title size */
+            font-weight: 700; /* Consistent bold weight */
+        }
+
+        /* Style for the hidden form */
+        form {
+            display: none; /* Keep the form hidden */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-md) var(--spacing-sm);
+            }
+
+            .container {
+                padding: var(--spacing-md) var(--spacing-sm);
+                margin-top: var(--spacing-md);
+            }
+
+            .back-btn {
+                 padding: 8px 12px;
+                 font-size: 0.9em;
+                 margin-bottom: var(--spacing-md);
+            }
+             .back-btn svg {
+                 margin-right: 6px;
+             }
+             .back-btn:hover svg {
+                 margin-right: 10px;
+             }
+
+
+            h2 {
+                font-size: 1.8rem;
+                margin-bottom: var(--spacing-lg);
+                 padding-bottom: var(--spacing-xs);
+            }
+
+             .alert {
+                 padding: var(--spacing-xs) var(--spacing-sm);
+                 margin-bottom: var(--spacing-xs);
+                 font-size: 0.9em;
+             }
+              .alert svg {
+                 margin-right: var(--spacing-xs);
+             }
+
+
+            .card-container {
+                gap: var(--spacing-sm);
+            }
+
+            .card {
+                padding: var(--spacing-md);
+            }
+
+            .card .icon svg {
+                width: 40px;
+                height: 40px;
+                 margin-bottom: var(--spacing-sm);
+            }
+
+            .card h3 {
+                font-size: 1.2rem;
+            }
+        }
+
+         @media (max-width: 480px) {
+             body {
+                 padding: var(--spacing-md) var(--spacing-xs);
+             }
+              .container {
+                 padding: var(--spacing-sm) var(--spacing-xs);
+                 margin-top: var(--spacing-sm);
+             }
+              .back-btn {
+                 padding: 6px 10px;
+                 font-size: 0.8em;
+                 margin-bottom: var(--spacing-md);
+             }
+              .back-btn svg {
+                 margin-right: 4px;
+             }
+              .back-btn:hover svg {
+                 margin-right: 8px;
+             }
+
+              h2 {
+                 font-size: 1.6rem;
+                 margin-bottom: var(--spacing-md);
+             }
+
+              .alert {
+                 padding: var(--spacing-xs);
+                 margin-bottom: var(--spacing-xs);
+                 font-size: 0.85em;
+              }
+               .alert svg {
+                 margin-right: var(--spacing-xs);
+             }
+
+              .card-container {
+                 gap: var(--spacing-xs);
+             }
+
+             .card {
+                 padding: var(--spacing-sm);
+             }
+
+             .card .icon svg {
+                 width: 32px;
+                 height: 32px;
+                  margin-bottom: var(--spacing-sm);
+             }
+
+             .card h3 {
+                 font-size: 1rem;
+             }
+         }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        {# Back button #}
+        <a href="{{ url_for('back_teacher') }}" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Back
+        </a>
+
+        {# Main heading #}
+        <h2>Select Group Type</h2>
+
+        {# Flash messages block #}
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">
+                      {% if category == 'success' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                      {% elif category == 'error' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                      {% endif %}
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+        </div>
+
+        {# Card container for group type selection #}
+        <div class="card-container">
+            {# Card for Common Groups #}
+            <div class="card" onclick="submitForm('common')">
+                <div class="icon">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </div>
+                <h3>Common Groups</h3>
+            </div>
+
+            {# Card for Individual Groups #}
+            <div class="card" onclick="submitForm('non-common')">
+                   <div class="icon">
+                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                   </div>
+                <h3>Individual Groups</h3>
+            </div>
+        </div>
+    </div>
+
+    {# Hidden form for submitting group type #}
+    <form id="groupForm" method="POST" action="{{ url_for('show_sections') }}">
+        <input type="hidden" name="group_type" id="groupTypeInput">
+    </form>
+
+    {# JavaScript for form submission #}
+    <script>
+        function submitForm(type) {
+            document.getElementById('groupTypeInput').value = type;
+            document.getElementById('groupForm').submit();
+        }
+    </script>
+
+</body>
+</html>

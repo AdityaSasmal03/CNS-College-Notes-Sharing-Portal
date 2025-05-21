@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Students</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {# Include Tailwind CSS with plugins and custom color config #}
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-navy': { // Define a custom color named 'primary-navy'
+                            50: '#eef2ff',    // Lighter shade
+                            100: '#e0e7ff',   // Lighter shade
+                            200: '#c7d2fe',   // Lighter shade
+                            300: '#a5b4fc',   // Lighter shade
+                            400: '#818cf8',   // Medium shade
+                            500: '#6366f1',   // Medium shade
+                            600: '#4f46e5',   // Medium shade
+                            700: '#4338ca',   // Darker shade
+                            800: '#3730a3',   // Darker shade
+                            900: '#312e81',   // Darker shade
+                            950: '#1e1b4b',   // Darkest shade
+                            DEFAULT: '#5a67d8', // Our navy blue primary color
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    {# Link to Poppins font #}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    {# Link to Font Awesome for icons #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBgzWkkmhxwOBGgFAWVLwVYlrwksG/g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* --- Variables --- */
+        :root {
+            --primary-color: #5a67d8; /* Our modern navy blue */
+            --primary-color-dark: #4c51bf;
+            --background-color: #f7fafc; /* Light clean background */
+            --card-background: #ffffff; /* White */
+            --text-color-dark: #2d3748; /* Darker text for better contrast */
+            --text-color-light: #4a5568;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+
+            /* Button colors */
+            --button-primary-bg: var(--primary-color);
+            --button-primary-bg-hover: var(--primary-color-dark);
+            --button-secondary-bg: #6c757d; /* Grey for back button */
+            --button-secondary-bg-hover: #5a6268;
+
+            /* Flash message colors (matching Upload Response) */
+            --flash-success-bg: #d4edda;
+            --flash-success-color: #155724;
+            --flash-success-border: #c3e6cb;
+
+            --flash-error-bg: #f8d7da; /* Using the standard error color */
+            --flash-error-color: #721c24; /* Using the standard error text color */
+            --flash-error-border: #f5c6cb; /* Using the standard error border color */
+
+            --flash-warning-bg: #fff3cd;
+            --flash-warning-color: #85640a;
+            --flash-warning-border: #ffeeba;
+
+            --flash-info-bg: #e2e7f2;
+            --flash-info-color: #385898;
+            --flash-info-border: #d1dbe9;
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif; /* Use Poppins */
+            background: linear-gradient(to bottom right, var(--background-color), #e2e8f0); /* Consistent subtle gradient */
+            margin: 0;
+            padding: var(--spacing-md); /* Consistent padding */
+            color: var(--text-color-light); /* Default text color using variable */
+            line-height: 1.6;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color-dark); /* Ensure headings use the dark text color variable */
+            font-weight: 700; /* Consistent bold weight for headings */
+            margin-top: 0;
+        }
+
+        p {
+             color: var(--text-color-light); /* Ensure paragraphs use the light text color variable */
+        }
+
+        /* --- Layout --- */
+        .max-w-6xl.mx-auto.px-4.py-6 {
+             width: 100%;
+             max-width: 960px; /* Consistent max-width */
+             margin: var(--spacing-md) auto; /* Consistent margin */
+             padding: var(--spacing-md); /* Consistent padding */
+             box-sizing: border-box;
+        }
+
+
+        /* --- Components --- */
+
+        /* Style for the back button */
+        .inline-block.mb-4.px-4.py-2.bg-blue-600.text-white.rounded.hover\:bg-blue-700.transition {
+             display: inline-block;
+             margin-bottom: var(--spacing-md); /* Consistent spacing below button */
+             padding: 10px 20px; /* Adjusted padding */
+             background-color: var(--button-secondary-bg); /* Use grey color variable */
+             color: white; /* White text for grey button */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Consistent transition */
+             font-weight: 600; /* Consistent bold weight */
+             box-shadow: var(--shadow-light); /* Add a light shadow */
+             cursor: pointer;
+             border: none;
+             text-decoration: none;
+             font-family: 'Poppins', sans-serif;
+        }
+
+        .inline-block.mb-4.px-4.py-2.bg-blue-600.text-white.rounded.hover\:bg-blue-700.transition:hover {
+             background-color: var(--button-secondary-bg-hover); /* Darker grey on hover */
+             box-shadow: var(--shadow-medium);
+        }
+
+        /* Style for the main heading */
+        .text-2xl.font-bold.text-center.text-blue-700.mb-6 {
+             font-size: 2.2rem; /* Consistent heading size */
+             font-weight: 700; /* Consistent bold weight */
+             text-align: center;
+             color: var(--text-color-dark); /* Use dark text color variable */
+             margin-bottom: var(--spacing-lg); /* Consistent spacing below heading */
+             border-bottom: 2px solid var(--primary-color); /* Add primary color underline */
+             padding-bottom: var(--spacing-xs); /* Add padding below underline */
+        }
+
+        /* Style for flash messages container */
+        .flash-messages {
+            margin-bottom: var(--spacing-md); /* Consistent spacing below messages */
+        }
+
+        /* Style for individual flash messages */
+        .flash-message {
+            position: fixed;
+            top: var(--spacing-md); /* Consistent top spacing */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            padding: var(--spacing-sm) var(--spacing-md); /* Consistent padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            opacity: 0.95; /* Slightly less opaque */
+            box-shadow: var(--shadow-light); /* Add a light shadow */
+            font-weight: 600; /* Bolder text */
+            word-break: break-word; /* Ensure text wraps */
+            max-width: 90%; /* Limit width on smaller screens */
+            text-align: center;
+        }
+
+        /* Specific styles for flash message categories */
+        .flash-message.flash-success {
+            background-color: var(--flash-success-bg);
+            color: var(--flash-success-color);
+            border: 1px solid var(--flash-success-border);
+        }
+        .flash-message.flash-danger {
+            background-color: var(--flash-error-bg); /* Use standard error color */
+            color: var(--flash-error-color); /* Use standard error text color */
+            border: 1px solid var(--flash-error-border); /* Use standard error border color */
+        }
+        .flash-message.flash-warning {
+            background-color: var(--flash-warning-bg);
+            color: var(--flash-warning-color);
+            border: 1px solid var(--flash-warning-border);
+        }
+        .flash-message.flash-error { /* Use standard error color for 'error' category too */
+            background-color: var(--flash-error-bg);
+            color: var(--flash-error-color);
+            border: 1px solid var(--flash-error-border);
+        }
+
+
+        /* Style for individual group containers */
+        .mb-8.border.border-blue-200.rounded-lg.shadow-sm {
+             margin-bottom: var(--spacing-md); /* Consistent spacing between groups */
+             border: 1px solid #eee; /* Light border */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             box-shadow: var(--shadow-light); /* Consistent shadow */
+             background-color: var(--card-background); /* White background */
+        }
+
+        /* Style for group header (Branch/Semester) */
+        .bg-blue-600.text-white.px-4.py-2.rounded-t-lg.flex.items-center.justify-between {
+             background-color: var(--primary-color); /* Primary color background */
+             color: white;
+             padding: var(--spacing-sm) var(--spacing-md); /* Consistent padding */
+             border-top-left-radius: var(--border-radius); /* Apply border-radius to top corners */
+             border-top-right-radius: var(--border-radius);
+             font-weight: 600;
+             font-size: 1.1em;
+             cursor: pointer; /* Indicate it's clickable */
+        }
+
+        /* Style for group header title */
+        .bg-blue-600.text-white.px-4.py-2.rounded-t-lg.flex.items-center.justify-between h2 {
+             color: white; /* White text for title */
+             font-size: 1.1em; /* Match parent font size */
+             font-weight: 600;
+             margin: 0;
+        }
+
+
+        /* Style for the toggle arrow button */
+        .bg-blue-600.text-white.px-4.py-2.rounded-t-lg.flex.items-center.justify-between button {
+             background: none;
+             border: none;
+             color: white;
+             font-size: 1.2em;
+             cursor: pointer;
+             padding: var(--spacing-xs); /* Add padding for click area */
+        }
+
+
+        /* Style for the group table container */
+        .overflow-x-auto.hidden {
+             overflow-x: auto; /* Keep horizontal scroll for tables */
+             /* Hidden is handled by JS */
+        }
+
+        /* Style for the table */
+        .w-full.text-sm.text-left {
+             width: 100%;
+             font-size: 0.9em; /* Adjusted font size */
+             text-align: left;
+             border-collapse: collapse; /* Collapse table borders */
+        }
+
+        /* Style for table header */
+        .w-full.text-sm.text-left thead {
+             background-color: var(--primary-navy-100); /* Light primary navy background */
+             color: var(--text-color-dark); /* Dark text */
+             text-transform: uppercase;
+             font-weight: 600;
+        }
+
+        /* Style for table header cells */
+        .w-full.text-sm.text-left th {
+             padding: var(--spacing-sm) var(--spacing-md); /* Consistent padding */
+             border-bottom: 1px solid #eee; /* Light border below header */
+        }
+
+        /* Style for table body */
+        .w-full.text-sm.text-left tbody {
+             /* Divide-y handled by Tailwind class */
+             color: var(--text-color-dark); /* Dark text for body */
+        }
+
+        /* Style for table rows */
+        .w-full.text-sm.text-left tr {
+             transition: background-color 0.2s ease-in-out;
+        }
+
+        /* Style for table row hover */
+        .w-full.text-sm.text-left tr.hover\:bg-blue-50:hover {
+             background-color: var(--primary-navy-50); /* Very light primary navy on hover */
+        }
+
+        /* Style for table data cells */
+        .w-full.text-sm.text-left td {
+             padding: var(--spacing-sm) var(--spacing-md); /* Consistent padding */
+             border-bottom: 1px solid #eee; /* Light border below cells */
+        }
+
+        /* Style for the "Appoint CR" form (inline) */
+        .w-full.text-sm.text-left td form.inline {
+             display: inline; /* Keep form inline */
+        }
+
+
+        /* Style for the "Appoint CR" button */
+        .w-full.text-sm.text-left td form.inline button {
+             padding: 6px 12px; /* Adjusted padding */
+             background-color: var(--button-primary-bg); /* Primary color background */
+             color: white;
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             font-weight: 600;
+             transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, ring-color 0.2s ease-in-out; /* Include ring transition */
+             box-shadow: var(--shadow-light); /* Add a light shadow */
+             cursor: pointer;
+             border: none;
+             font-size: 0.8em; /* Adjusted font size */
+             font-family: 'Poppins', sans-serif;
+        }
+
+        /* Style for the "Appoint CR" button hover/focus */
+        .w-full.text-sm.text-left td form.inline button:hover {
+             background-color: var(--button-primary-bg-hover); /* Darker primary on hover */
+             box-shadow: var(--shadow-medium);
+        }
+
+        .w-full.text-sm.text-left td form.inline button:focus {
+             outline: none;
+             box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.3); /* Primary color glow on focus */
+             /* Removed default Tailwind focus ring classes */
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-sm);
+            }
+            .max-w-6xl.mx-auto.px-4.py-6 {
+                 padding: var(--spacing-sm);
+                 margin: var(--spacing-md) auto;
+            }
+            .inline-block.mb-4.px-4.py-2.bg-blue-600.text-white.rounded.hover\:bg-blue-700.transition {
+                 padding: 8px 15px;
+                 font-size: 0.9em;
+                 margin-bottom: var(--spacing-md);
+            }
+             .text-2xl.font-bold.text-center.text-blue-700.mb-6 {
+                 font-size: 1.8rem;
+                 margin-bottom: var(--spacing-lg);
+                 padding-bottom: var(--spacing-xs);
+             }
+             .flash-message {
+                 top: var(--spacing-sm);
+                 padding: var(--spacing-xs) var(--spacing-sm);
+                 font-size: 0.9em;
+             }
+             .mb-8.border.border-blue-200.rounded-lg.shadow-sm {
+                 margin-bottom: var(--spacing-md);
+             }
+             .bg-blue-600.text-white.px-4.py-2.rounded-t-lg.flex.items-center.justify-between {
+                 padding: var(--spacing-xs) var(--spacing-sm);
+                 font-size: 1em;
+             }
+             .bg-blue-600.text-white.px-4.py-2.rounded-t-lg.flex.items-center.justify-between h2 {
+                 font-size: 1em;
+             }
+              .bg-blue-600.text-white.px-4.py-2.rounded-t-lg.flex.items-center.justify-between button {
+                 font-size: 1.1em;
+              }
+             .w-full.text-sm.text-left {
+                 font-size: 0.85em;
+             }
+              .w-full.text-sm.text-left th {
+                 padding: var(--spacing-xs) var(--spacing-sm);
+             }
+              .w-full.text-sm.text-left td {
+                 padding: var(--spacing-xs) var(--spacing-sm);
+             }
+             .w-full.text-sm.text-left td form.inline button {
+                 padding: 4px 8px;
+                 font-size: 0.7em;
+             }
+        }
+
+         @media (max-width: 480px) {
+             body {
+                 padding: var(--spacing-xs);
+             }
+              .max-w-6xl.mx-auto.px-4.py-6 {
+                 padding: var(--spacing-xs);
+                 margin: var(--spacing-md) auto;
+             }
+              .inline-block.mb-4.px-4.py-2.bg-blue-600.text-white.rounded.hover\:bg-blue-700.transition {
+                 padding: 6px 12px;
+                 font-size: 0.8em;
+                 margin-bottom: var(--spacing-md);
+             }
+              .text-2xl.font-bold.text-center.text-blue-700.mb-6 {
+                 font-size: 1.6rem;
+                 margin-bottom: var(--spacing-md);
+                 padding-bottom: var(--spacing-xs);
+             }
+             .flash-message {
+                 top: var(--spacing-xs);
+                 padding: var(--spacing-xs);
+                 font-size: 0.8em;
+             }
+              .mb-8.border.border-blue-200.rounded-lg.shadow-sm {
+                 margin-bottom: var(--spacing-md);
+             }
+              .bg-blue-600.text-white.px-4.py-2.rounded-t-lg.flex.items-center.justify-between {
+                 padding: var(--spacing-xs);
+                 font-size: 0.9em;
+              }
+             .bg-blue-600.text-white.px-4.py-2.rounded-t-lg.flex.items-center.justify-between h2 {
+                 font-size: 0.9em;
+             }
+              .bg-blue-600.text-white.px-4.py-2.rounded-t-lg.flex.items-center.justify-between button {
+                 font-size: 1em;
+              }
+              .w-full.text-sm.text-left {
+                 font-size: 0.8em;
+             }
+              .w-full.text-sm.text-left th {
+                 padding: var(--spacing-xs);
+             }
+              .w-full.text-sm.text-left td {
+                 padding: var(--spacing-xs);
+             }
+              .w-full.text-sm.text-left td form.inline button {
+                 padding: 3px 6px;
+                 font-size: 0.6em;
+              }
+         }
+
+    </style>
+    <script>
+        function toggleGroup(groupId) {
+            const groupTable = document.getElementById(`group-table-${groupId}`);
+            const arrow = document.getElementById(`arrow-${groupId}`);
+            if (groupTable.classList.contains('hidden')) {
+                groupTable.classList.remove('hidden');
+                arrow.textContent = '▲';
+            } else {
+                groupTable.classList.add('hidden');
+                arrow.textContent = '▼';
+            }
+        }
+    </script>
+</head>
+<body class="bg-white text-gray-800">
+
+    <div class="max-w-6xl mx-auto px-4 py-6">
+        {# Back button #}
+        <a href="{{ url_for('back_common') }}" class="inline-block mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+            ← Back
+        </a>
+
+        {# Main heading #}
+        <h1 class="text-2xl font-bold text-center text-blue-700 mb-6">All Students</h1>
+
+        {# Flash messages block #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+            {% for category, message in messages %}
+              <div class="flash-message flash-{{ category }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        {# Loop through groups #}
+        {% for group_key in final_data %}
+            {# Individual group container #}
+            <div class="mb-8 border border-blue-200 rounded-lg shadow-sm">
+                {# Group header (Branch/Semester) #}
+                <div class="bg-blue-600 text-white px-4 py-2 rounded-t-lg flex items-center justify-between" onclick="toggleGroup('{{ loop.index }}')">
+                    <h2>{{ group_key|upper }}</h2>
+                    {# Toggle arrow button #}
+                    <button class="focus:outline-none">
+                        <span id="arrow-{{ loop.index }}">▼</span>
+                    </button>
+                </div>
+                {# Group table container (initially hidden) #}
+                <div id="group-table-{{ loop.index }}" class="overflow-x-auto hidden">
+                    {# Table of students #}
+                    <table class="w-full text-sm text-left">
+                        {# Table header #}
+                        <thead class="bg-blue-100 text-blue-800 uppercase">
+                            <tr>
+                                <th class="px-4 py-2">ID</th>
+                                <th class="px-4 py-2">Name</th>
+                                <th class="px-4 py-2">Role</th>
+                                <th class="px-4 py-2">Branch</th>
+                                <th class="px-4 py-2">Semester</th>
+                                <th class="px-4 py-2">Actions</th>
+                            </tr>
+                        </thead>
+                        {# Table body #}
+                        <tbody class="divide-y divide-gray-200">
+                            {% for student in final_data[group_key] %}
+                                {# Individual student row #}
+                                <tr class="hover:bg-blue-50">
+                                    <td class="px-4 py-2">{{ student["Initials"] }}{{ student["ID"] }}</td>
+                                    <td class="px-4 py-2">{{ student["Name"] }}</td>
+                                    <td class="px-4 py-2">{{ student["Role"] or "—" }}</td>
+                                    <td class="px-4 py-2">{{ student["Branch"] }}</td>
+                                    <td class="px-4 py-2">{{ student["Semester"] }}</td>
+                                    <td class="px-4 py-2">
+                                        {# Form for appointing CR #}
+                                        <form action="{{ url_for('appoint_cr') }}" method="post" class="inline">
+                                            <input type="hidden" name="student_id" value="{{ student['ID'] }}">
+                                            {# Appoint CR button #}
+                                            <button type="submit" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 transition text-xs">
+                                                Appoint CR
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Individual Subject Sections</title>
+    <style>
+        /* --- Variables --- */
+        :root {
+            --primary-color: #5a67d8; /* A modern purple/blue */
+            --primary-color-dark: #4c51bf;
+            --background-color: #f7fafc; /* Light clean background */
+            --card-background: #ffffff;
+            --text-color-dark: #2d3748; /* Darker text for better contrast */
+            --text-color-light: #4a5568;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom right, var(--background-color), #e2e8f0); /* Subtle gradient background */
+            margin: 0;
+            padding: var(--spacing-lg) var(--spacing-md); /* Add horizontal padding */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            line-height: 1.6; /* Improved readability */
+            box-sizing: border-box; /* Include padding in element's total width and height */
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit; /* Apply border-box to all elements */
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color-dark);
+            font-weight: 700;
+            margin-top: 0;
+        }
+
+        h2 {
+             font-size: 2.2rem; /* Consistent heading size */
+             margin-bottom: var(--spacing-lg);
+             text-align: center;
+        }
+
+        /* --- Layout --- */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-md);
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Styling the existing .subject-row to act as a grid container */
+        .subject-row {
+            display: grid; /* Use grid for layout within the row */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg); /* Add space between different subject groups */
+            width: 100%;
+            justify-content: center;
+        }
+
+
+        /* --- Components --- */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            background-color: transparent;
+            color: var(--primary-color);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-lg);
+            transition: all 0.2s ease-in-out;
+            font-weight: 600;
+            border: 1px solid var(--primary-color);
+            background-size: 200% auto;
+        }
+
+        .back-btn:hover {
+            background-color: var(--primary-color);
+            color: var(--card-background);
+            box-shadow: var(--shadow-light);
+        }
+
+        .back-btn svg {
+            margin-right: 8px;
+            transition: margin-right 0.2s ease-in-out;
+        }
+
+        .back-btn:hover svg {
+             margin-right: 12px;
+        }
+
+        /* Styling the existing .subject-card to look like the modern card */
+        .subject-card {
+            padding: var(--spacing-md); /* Adjusted padding */
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Align content to the top */
+            /* Remove the absolute positioning padding as buttons will be static on mobile */
+            padding-bottom: var(--spacing-md); /* Adjust padding based on new button position */
+        }
+
+        .subject-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--primary-color);
+        }
+
+        .subject-card .icon { /* Styling for optional icon within subject-card */
+            margin-bottom: var(--spacing-md);
+            color: var(--primary-color);
+        }
+
+        .subject-card .icon svg {
+             width: 48px;
+             height: 48px;
+        }
+
+        /* --- Subject Card Specific Inner Element Styles --- */
+        .subject-card .subject-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+            color: var(--text-color-dark);
+        }
+
+        .subject-card .subject-info {
+            color: var(--text-color-light);
+            margin-bottom: var(--spacing-xs);
+            font-size: 0.95em;
+            word-break: break-word; /* Prevent long words from overflowing */
+        }
+
+        .subject-card .subject-info:last-of-type {
+            margin-bottom: 0;
+        }
+
+        /* Styling the existing .action-buttons */
+        .action-buttons {
+            margin-top: var(--spacing-md);
+            display: flex;
+            gap: var(--spacing-sm);
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 100%;
+            /* Remove absolute positioning as per original mobile responsive styles */
+            position: static;
+            bottom: auto;
+            right: auto;
+            padding-bottom: 0;
+        }
+
+        /* --- Buttons within Cards --- */
+        .upload-button-card, .view-group-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            text-decoration: none;
+            border: none;
+            font-weight: 600;
+        }
+
+        .upload-button-card {
+            background-color: #28a745; /* Green color */
+            color: white;
+        }
+
+        .view-group-button {
+            background-color: var(--primary-color); /* Primary color for view button */
+            color: white;
+        }
+
+        .upload-button-card:hover {
+            background-color: #218838; /* Darker green on hover */
+            box-shadow: var(--shadow-light);
+        }
+
+        .view-group-button:hover {
+            background-color: var(--primary-color-dark); /* Darker primary color on hover */
+            box-shadow: var(--shadow-light);
+        }
+
+        /* --- Upload Form and Overlay --- */
+        #upload-form {
+            margin-top: 0;
+            padding: var(--spacing-md);
+            border: none;
+            border-radius: var(--border-radius);
+            background-color: var(--card-background);
+            text-align: left;
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow-medium);
+            box-sizing: border-box; /* Ensure padding is included */
+        }
+
+        #upload-form h3 {
+            margin-top: 0;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-color-dark);
+            font-size: 1.5em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: var(--spacing-sm);
+        }
+
+        #upload-form div {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        #upload-form label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-weight: 600;
+            color: var(--text-color-dark);
+        }
+
+        #upload-form input[type="text"],
+        #upload-form input[type="file"],
+        #upload-form button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: var(--border-radius);
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+
+        /* Style for the custom file upload button */
+        .custom-file-upload {
+            border: 1px solid var(--text-color-light);
+            display: inline-block;
+            padding: 10px 12px;
+            cursor: pointer;
+            border-radius: var(--border-radius);
+            background-color: var(--background-color);
+            color: var(--text-color-dark);
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            font-weight: 400;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #e2e8f0;
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Hide the actual file input */
+        #file-input {
+            display: none;
+        }
+
+        #file-selected-name {
+            display: inline-block;
+            margin-left: var(--spacing-sm);
+            font-size: 0.9em;
+            color: var(--text-color-light);
+            vertical-align: middle;
+            word-break: break-all; /* Break long filenames */
+        }
+
+        #upload-form button[type="submit"] {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            font-weight: 600;
+            margin-top: var(--spacing-sm);
+            width: auto; /* Adjust width for button */
+        }
+
+        #upload-form button[type="submit"]:hover {
+            background-color: var(--primary-color-dark);
+            box-shadow: var(--shadow-light);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            display: none;
+            backdrop-filter: blur(3px);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-color-light);
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .close-button:hover {
+            color: var(--text-color-dark);
+        }
+
+        .no-subjects {
+            color: var(--text-color-light);
+            font-style: italic;
+            text-align: center;
+            margin-top: var(--spacing-md);
+        }
+
+        /* --- Responsive Styles --- */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-md) var(--spacing-sm);
+            }
+
+            .container {
+                padding: var(--spacing-md) var(--spacing-sm);
+                margin-top: var(--spacing-sm);
+            }
+
+            h2 {
+                font-size: 1.8rem;
+                margin-bottom: var(--spacing-md);
+            }
+
+            /* Subject row will stack on small screens */
+            .subject-row {
+                 grid-template-columns: 1fr; /* Stack cards vertically */
+                 gap: var(--spacing-sm); /* Adjust gap */
+                 margin-bottom: var(--spacing-md); /* Adjust margin */
+            }
+
+            .subject-card { /* Apply changes to subject-card */
+                 padding: var(--spacing-md);
+            }
+
+            .action-buttons { /* Apply changes to action-buttons */
+                flex-direction: column;
+                gap: var(--spacing-xs);
+                margin-top: var(--spacing-sm);
+            }
+
+            .upload-button-card, .view-group-button {
+                 width: 100%; /* Full width buttons on small screens */
+                 text-align: center;
+                 justify-content: center; /* Center button text */
+            }
+
+            .back-btn {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: var(--spacing-md);
+                display: inline-flex;
+            }
+
+            #upload-form {
+                max-height: 90vh;
+                overflow-y: auto;
+                padding: var(--spacing-sm);
+            }
+
+            #upload-form h3 {
+                font-size: 1.3em;
+            }
+
+             #upload-form input[type="text"],
+             #upload-form input[type="file"],
+             #upload-form button[type="submit"],
+             .custom-file-upload {
+                padding: 8px;
+             }
+
+             #file-selected-name {
+                 margin-left: var(--spacing-xs);
+                 word-break: break-all;
+             }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('show_sections') }}" class="back-btn">← Back</a>
+        <h2>Your Subject Sections</h2>
+        {% if not teacher_data %}
+            <p class="no-subjects">No subjects assigned to you yet.</p>
+        {% else %}
+            {% set grouped_subjects = {} %}
+            {% for subject in teacher_data %}
+                {% set key = subject.branch + '-' + subject.semester %}
+                {% if key not in grouped_subjects %}
+                    {% set _ = grouped_subjects.update({key: []}) %}
+                {% endif %}
+                {% set _ = grouped_subjects[key].append(subject) %}
+            {% endfor %}
+
+            {% for key, subjects in grouped_subjects.items() %}
+                <div class="subject-row">
+                    {% for subject in subjects %}
+                        <div class="subject-card">
+                            <h3 class="subject-title">{{ subject.subject }}</h3>
+                            <p class="subject-info"><strong>Group:</strong> {{ subject.groupname|upper }}</p>
+                            <p class="subject-info"><strong>Branch:</strong> {{ subject.branch|upper }}</p>
+                            <p class="subject-info"><strong>Semester:</strong> {{ subject.semester|upper }}</p>
+                            <div class="action-buttons">
+                                <button class="upload-button-card" onclick="showUploadForm('{{ subject.groupname }}', '{{ subject.branch }}', '{{ subject.semester }}', '{{ subject.subject }}')">Upload File</button>
+                                <form id="view-group-form-{{ loop.index }}" method="POST" action="{{ url_for('view_subject_details') }}" style="display: inline;">
+                                    <input type="hidden" name="groupname" value="{{ subject.groupname }}">
+                                    <input type="hidden" name="branch" value="{{ subject.branch }}">
+                                    <input type="hidden" name="semester" value="{{ subject.semester }}">
+                                    <input type="hidden" name="subject" value="{{ subject.subject }}">
+                                    <button type="submit" class="view-group-button">View Group</button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% if subjects|length == 1 %}
+                        <div class="subject-card" style="visibility: hidden;"></div> {% endif %}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form id="upload-form" method="POST" action="{{ url_for('upload_to_drive_indiv') }}" enctype="multipart/form-data">
+            <button type="button" class="close-button" onclick="hideUploadForm()">×</button>
+            <h3>Upload New File</h3>
+            <div>
+                <label for="filename">Filename:</label>
+                <input type="text" id="filename" name="filename" required>
+            </div>
+            <div>
+                <label for="file-input" class="custom-file-upload">Choose File</label>
+                <input type="file" id="file-input" name="file" accept=".doc,.docx,.ppt,.pptx,.pdf" required style="display: none;">
+                <span id="file-selected-name">No file chosen</span>
+            </div>
+            <input type="hidden" id="groupname-upload" name="groupname" value="">
+            <input type="hidden" id="branch-upload" name="branch" value="">
+            <input type="hidden" id="semester-upload" name="semester" value="">
+            <input type="hidden" id="subject-upload" name="subject" value="">
+            <button type="submit" class="upload-button">Upload to Google Drive</button>
+            <p style="font-size: 0.9em; color: #777; margin-top: 10px;">Supported formats: doc, docx, ppt, pptx, pdf</p>
+        </form>
+
+        <div id="overlay" class="overlay" onclick="hideUploadForm()"></div>
+    </div>
+
+    <script>
+        const uploadForm = document.getElementById('upload-form');
+        const fileInput = document.getElementById('file-input');
+        const fileSelectedName = document.getElementById('file-selected-name');
+        const filenameInput = document.getElementById('filename');
+        const overlay = document.getElementById('overlay');
+        const groupnameInputUpload = document.getElementById('groupname-upload');
+        const branchInputUpload = document.getElementById('branch-upload');
+        const semesterInputUpload = document.getElementById('semester-upload');
+        const subjectInputUpload = document.getElementById('subject-upload');
+
+        function showUploadForm(groupName, branch, sem, sub) {
+            groupnameInputUpload.value = groupName;
+            branchInputUpload.value = branch;
+            semesterInputUpload.value = sem;
+            subjectInputUpload.value = sub;
+            uploadForm.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        function hideUploadForm() {
+            uploadForm.style.display = 'none';
+            overlay.style.display = 'none';
+            groupnameInputUpload.value = '';
+            semesterInputUpload.value = '';
+            branchInputUpload.value = '';
+            subjectInputUpload.value = '';
+            fileInput.value = '';
+            fileSelectedName.textContent = 'No file chosen';
+            filenameInput.value = '';
+        }
+
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                fileSelectedName.textContent = this.files[0].name;
+                const originalNameWithoutExtension = this.files[0].name.split('.').slice(0, -1).join('.');
+                filenameInput.value = originalNameWithoutExtension;
+            } else {
+                fileSelectedName.textContent = 'No file chosen';
+                filenameInput.value = '';
+            }
+        });
+
+        // Optional: Close form if escape key is pressed
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && uploadForm.style.display === 'block') {
+                hideUploadForm();
+            }
+        });
+    </script>
+</body>
+</html>

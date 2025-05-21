@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Messages</title>
+    {# Link to Poppins font #}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    {# Link to Font Awesome for icons if needed later #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBgzWkkmhxwOBGgFAWVLwVYlrwksG/g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* --- Variables --- */
+        :root {
+            --primary-color: #5a67d8; /* Our modern navy blue */
+            --primary-color-dark: #4c51bf;
+            --background-color: #f7fafc; /* Light clean background */
+            --card-background: #ffffff; /* White */
+            --text-color-dark: #2d3748; /* Darker text for better contrast */
+            --text-color-light: #4a5568;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+
+             /* Error message colors (matching flash error) */
+             --error-bg: #f8d7da;
+             --error-color: #721c24;
+             --error-border: #f5c6cb;
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif; /* Use Poppins for consistency */
+            background: linear-gradient(to bottom right, var(--background-color), #e2e8f0); /* Consistent subtle gradient */
+            margin: 0;
+            padding: var(--spacing-md); /* Consistent padding */
+            color: var(--text-color-light); /* Default text color using variable */
+            line-height: 1.6;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color-dark); /* Ensure headings use the dark text color variable */
+            font-weight: 700; /* Consistent bold weight for headings */
+            margin-top: 0;
+        }
+
+        p {
+             color: var(--text-color-light); /* Ensure paragraphs use the light text color variable */
+        }
+
+        /* --- Components --- */
+
+        /* Style for the container holding error messages */
+        .error-messages {
+             width: 100%;
+             max-width: 600px; /* Consistent max-width with other containers */
+             margin: var(--spacing-md) auto; /* Center the block */
+             padding: 0; /* No padding on the container itself */
+             box-sizing: border-box;
+        }
+
+
+        /* Style for individual error message containers */
+        .error-container {
+            margin-bottom: var(--spacing-sm); /* Consistent spacing between messages */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            padding: var(--spacing-sm) var(--spacing-md); /* Consistent padding */
+            color: var(--error-color); /* Use error color variable */
+            background-color: var(--error-bg); /* Use error background variable */
+            border: 1px solid var(--error-border); /* Use error border variable */
+            box-shadow: var(--shadow-light); /* Use consistent shadow variable */
+            word-break: break-word; /* Keep word break for long messages */
+            font-weight: 600; /* Bolder text */
+        }
+
+        .error-container strong {
+            font-weight: 700; /* Make "Error:" even bolder */
+            margin-right: var(--spacing-xs); /* Add spacing after "Error:" */
+            color: var(--error-color); /* Ensure strong text also uses error color */
+        }
+
+        /* Style for the "No errors" paragraph */
+        p {
+            text-align: center;
+            color: var(--text-color-light); /* Use light text color variable */
+            font-style: italic;
+            margin-top: var(--spacing-md); /* Consistent spacing */
+        }
+
+
+        /* --- Responsive Styles --- */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-sm);
+            }
+             .error-messages {
+                 margin: var(--spacing-sm) auto;
+             }
+            .error-container {
+                padding: var(--spacing-xs) var(--spacing-sm);
+                margin-bottom: var(--spacing-xs);
+                font-size: 0.9em;
+            }
+             .error-container strong {
+                 margin-right: 6px;
+             }
+             p {
+                 margin-top: var(--spacing-md);
+             }
+        }
+
+         @media (max-width: 480px) {
+             body {
+                 padding: var(--spacing-xs);
+             }
+              .error-messages {
+                 margin: var(--spacing-xs) auto;
+             }
+              .error-container {
+                 padding: var(--spacing-xs);
+                 margin-bottom: var(--spacing-xs);
+                 font-size: 0.85em;
+              }
+               .error-container strong {
+                 margin-right: 4px;
+             }
+              p {
+                 margin-top: var(--spacing-md);
+              }
+         }
+
+    </style>
+</head>
+<body>
+    {# Error messages block #}
+    {% if elist %}
+        <div class="error-messages">
+            {% for error in elist %}
+                <div class="error-container">
+                    <strong>Error:</strong> {{ error }}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        {# "No errors" paragraph #}
+        <p>No errors.</p>
+    {% endif %}
+</body>
+</html>

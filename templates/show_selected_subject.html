@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Group Files</title>
+    {# Include Tailwind CSS with plugins and custom color config #}
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-navy': { // Define a custom color named 'primary-navy'
+                            50: '#eef2ff',    // Lighter shade
+                            100: '#e0e7ff',   // Lighter shade
+                            200: '#c7d2fe',   // Lighter shade
+                            300: '#a5b4fc',   // Lighter shade
+                            400: '#818cf8',   // Medium shade
+                            500: '#6366f1',   // Medium shade
+                            600: '#4f46e5',   // Medium shade
+                            700: '#4338ca',   // Darker shade
+                            800: '#3730a3',   // Darker shade
+                            900: '#312e81',   // Darker shade
+                            950: '#1e1b4b',   // Darkest shade
+                            DEFAULT: '#5a67d8', // Our navy blue primary color
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    {# Link to Poppins font #}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    {# Link to Font Awesome for icons #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBgzWkkmhxwOBGgFAWVLwVYlrwksG/g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* --- Variables --- */
+        :root {
+            --primary-color: #3c48b4; /* Our modern navy blue */
+            --primary-color-dark: #3e44b9;
+            --background-color: #f7fafc; /* Light clean background */
+            --card-background: #ffffff; /* White */
+            --text-color-dark: #2d3748; /* Darker text for better contrast */
+            --text-color-light: #4a5568;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+
+            /* Button colors */
+            --button-primary-bg: var(--primary-color);
+            --button-primary-bg-hover: var(--primary-color-dark);
+            --button-secondary-bg: #6c757d; /* Grey for back button */
+            --button-secondary-bg-hover: #5a6268;
+            --button-success-bg: #28a745; /* Green for upload/download */
+            --button-success-bg-hover: #218838;
+            --button-danger-bg: #dc3545; /* Red for delete */
+            --button-danger-bg-hover: #c82333;
+
+            /* Modal colors */
+            --modal-background: rgba(0, 0, 0, 0.6); /* Dark overlay */
+            --modal-content-bg: var(--card-background);
+            --modal-content-shadow: var(--shadow-medium);
+            --modal-close-color: #aaa;
+            --modal-close-color-hover: var(--text-color-dark);
+            --modal-border: #eee;
+            --modal-label-color: var(--text-color-dark);
+            --modal-input-border: #ccc;
+            --modal-input-focus-border: var(--primary-color);
+            --modal-input-focus-shadow: rgba(90, 103, 216, 0.3); /* Primary color glow */
+            --modal-file-upload-bg: #eee;
+            --modal-file-upload-color: var(--text-color-light); /* Use light text color */
+            --modal-file-upload-label-bg: #ddd;
+            --modal-file-upload-label-bg-hover: #ccc;
+            --modal-hint-color: #777;
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif; /* Use Poppins */
+            background: linear-gradient(to bottom right, var(--background-color), #e2e8f0); /* Consistent subtle gradient */
+            margin: 0;
+            padding: 0; /* Padding handled by main/container */
+            color: var(--text-color-light); /* Default text color using variable */
+            line-height: 1.6;
+            box-sizing: border-box;
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color-dark); /* Ensure headings use the dark text color variable */
+            font-weight: 700; /* Consistent bold weight for headings */
+            margin-top: 0;
+        }
+
+        p {
+             color: var(--text-color-light); /* Ensure paragraphs use the light text color variable */
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--primary-color); /* Primary color header */
+            color: white;
+            padding: var(--spacing-sm) var(--spacing-md); /* Consistent padding */
+            box-shadow: var(--shadow-light); /* Consistent shadow */
+            position: sticky; /* Make header sticky */
+            top: 0; /* Stick to the top */
+            z-index: 50; /* Ensure it's above main content but below modal */
+        }
+
+        header .max-w-6xl.mx-auto.px-4.flex.justify-between.items-center {
+             width: 100%; /* Ensure header content fills its container */
+             max-width: 960px; /* Match main content max-width */
+             margin-left: auto;
+             margin-right: auto;
+             padding-left: var(--spacing-md); /* Consistent horizontal padding */
+             padding-right: var(--spacing-md);
+        }
+
+
+        header h1 {
+            color: white; /* White title in header */
+            font-size: 1.5em; /* Adjusted font size */
+            font-weight: 600; /* Slightly less bold than main headings */
+            margin: 0;
+        }
+
+        header a { /* Back button in header */
+            background-color: var(--card-background); /* White background */
+            color: var(--primary-color); /* Primary color text */
+            padding: 8px 15px; /* Adjusted padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: var(--shadow-light);
+        }
+
+        header a:hover {
+            background-color: #f0f0f0; /* Slightly darker white on hover */
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* --- Main Content Area --- */
+        main {
+            max-width: 960px; /* Adjusted max-width for main content */
+            margin: var(--spacing-md) auto; /* Center main content */
+            padding: 0 var(--spacing-md); /* Horizontal padding */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md); /* Consistent spacing between sections */
+        }
+
+        /* Style for the group/subject details section */
+        main section:first-of-type {
+             background-color: var(--card-background); /* White background */
+             padding: var(--spacing-md); /* Consistent padding */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             box-shadow: var(--shadow-light); /* Consistent shadow */
+             border: 1px solid #eee; /* Light border */
+             display: grid; /* Use grid for details layout */
+             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+             gap: var(--spacing-sm); /* Gap between detail items */
+             font-size: 0.95em; /* Adjusted font size */
+        }
+
+        main section:first-of-type strong {
+             color: var(--text-color-dark); /* Dark text for labels */
+             font-weight: 600; /* Bolder label */
+        }
+
+
+        /* Style for the Upload File button */
+        main > div:nth-of-type(1) button { /* Target the button directly following the details section */
+             background-color: var(--button-success-bg); /* Use success color */
+             color: white;
+             padding: 10px 20px; /* Adjusted padding */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             font-weight: 600;
+             transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+             box-shadow: var(--shadow-light);
+             cursor: pointer;
+             border: none;
+             font-family: 'Poppins', sans-serif;
+        }
+
+        main > div:nth-of-type(1) button:hover {
+             background-color: var(--button-success-bg-hover); /* Darker success on hover */
+             box-shadow: var(--shadow-medium);
+        }
+
+
+        /* --- Upload Form Modal --- */
+        #upload-form-container {
+            display: none; /* Hidden by default */
+            position: fixed;
+            inset: 0;
+            background-color: var(--modal-background); /* Dark overlay */
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px); /* Blur effect */
+        }
+
+        #upload-form {
+            background-color: var(--modal-content-bg); /* White background */
+            padding: var(--spacing-md); /* Consistent padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            box-shadow: var(--modal-content-shadow); /* Consistent shadow */
+            text-align: left;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            border: 1px solid var(--modal-border); /* Light border */
+        }
+
+        #upload-form h3 { /* Upload form title */
+            color: var(--text-color-dark); /* Dark text color */
+            margin-top: 0;
+            margin-bottom: var(--spacing-md); /* Consistent spacing */
+            font-size: 1.8em; /* Adjusted font size */
+            font-weight: 700; /* Consistent bold weight */
+            border-bottom: 2px solid var(--primary-color); /* Primary color underline */
+            padding-bottom: var(--spacing-xs); /* Padding below underline */
+        }
+
+        #upload-form .close-button {
+            position: absolute;
+            top: var(--spacing-sm); /* Consistent spacing */
+            right: var(--spacing-sm); /* Consistent spacing */
+            background: none;
+            border: none;
+            color: var(--modal-close-color); /* Grey color */
+            font-size: 1.5em; /* Consistent icon size */
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+            padding: var(--spacing-xs); /* Add padding for click area */
+        }
+
+        #upload-form .close-button:hover {
+            color: var(--modal-close-color-hover); /* Darker grey on hover */
+        }
+
+        #upload-form > div { /* Spacing for form groups */
+            margin-bottom: var(--spacing-md); /* Consistent spacing */
+        }
+
+        #upload-form label { /* Form labels */
+            display: block;
+            margin-bottom: var(--spacing-xs); /* Consistent spacing */
+            color: var(--modal-label-color); /* Dark text color */
+            font-weight: 600; /* Consistent bold weight */
+            font-size: 0.95em; /* Adjusted font size */
+        }
+
+        #upload-form input[type="text"],
+        #upload-form .custom-file-upload-wrapper {
+            width: 100%; /* Full width */
+            padding: 10px 12px; /* Adjusted padding */
+            border: 1px solid var(--modal-input-border); /* Consistent border */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            box-sizing: border-box;
+            font-size: 1em;
+            color: var(--text-color-dark); /* Dark text color */
+            line-height: 1.5;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        #upload-form input[type="text"]:focus { /* Input focus state */
+             outline: none;
+             border-color: var(--modal-input-focus-border); /* Primary color border */
+             box-shadow: 0 0 0 3px var(--modal-input-focus-shadow); /* Primary color glow */
+        }
+
+
+        #upload-form .custom-file-upload-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--modal-file-upload-bg); /* Light background */
+            color: var(--modal-file-upload-color); /* Grey text */
+            cursor: pointer;
+        }
+
+        #upload-form .custom-file-upload-wrapper span { /* File name display */
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            flex-grow: 1; /* Allow text to take available space */
+             margin-right: var(--spacing-sm); /* Space between text and button */
+        }
+
+        #upload-form .custom-file-upload {
+            display: none; /* Hide the actual file input */
+        }
+
+        #upload-form button[type="submit"],
+        #upload-form .upload-button { /* Upload button */
+            background-color: var(--button-primary-bg); /* Primary color */
+            color: white;
+            border: none;
+            padding: 10px 20px; /* Adjusted padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            width: 100%;
+            box-sizing: border-box;
+            font-weight: 600;
+            box-shadow: var(--shadow-light);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        #upload-form button[type="submit"]:hover,
+        #upload-form .upload-button:hover {
+            background-color: var(--button-primary-bg-hover); /* Darker primary on hover */
+            box-shadow: var(--shadow-medium);
+        }
+
+        #upload-form p { /* Hint text */
+            font-size: 0.85em; /* Adjusted font size */
+            color: var(--modal-hint-color); /* Dark grey text */
+            margin-top: var(--spacing-xs); /* Consistent spacing */
+            text-align: left; /* Align left */
+        }
+
+        #upload-form .custom-file-upload-wrapper label { /* Browse button */
+            background-color: var(--modal-file-upload-label-bg); /* Light grey background */
+            color: var(--text-color-dark); /* Dark text */
+            padding: 8px 12px;
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            font-size: 0.9em; /* Adjusted font size */
+            font-weight: 600;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        #upload-form .custom-file-upload-wrapper label:hover {
+            background-color: var(--modal-file-upload-label-bg-hover); /* Darker light grey on hover */
+        }
+
+
+        /* --- File List Section --- */
+        main section:last-of-type h2 { /* All content heading */
+             font-size: 1.5em; /* Consistent heading size */
+             font-weight: 700;
+             margin-bottom: var(--spacing-md); /* Consistent spacing */
+             border-bottom: 1px solid #eee; /* Light border */
+             padding-bottom: var(--spacing-xs);
+             color: var(--text-color-dark);
+        }
+
+        main section:last-of-type > p { /* No files paragraph */
+             text-align: center;
+             color: var(--text-color-light);
+             font-style: italic;
+             margin-top: var(--spacing-md);
+        }
+
+
+        /* Style for individual file cards */
+        .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition {
+             border: 1px solid #eee; /* Consistent border */
+             padding: var(--spacing-md); /* Consistent padding */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             box-shadow: var(--shadow-light); /* Consistent shadow */
+             transition: all 0.3s ease-in-out;
+             background-color: var(--card-background); /* White background */
+        }
+
+        .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition:hover {
+             box-shadow: var(--shadow-medium); /* Consistent shadow on hover */
+             transform: translateY(-5px); /* Slight lift effect */
+        }
+
+        /* Text within file cards */
+        .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition p {
+             margin-bottom: var(--spacing-xs); /* Consistent spacing below paragraphs */
+             word-break: break-word; /* Ensure text wraps */
+        }
+
+        .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition p:last-of-type {
+             margin-bottom: 0; /* No bottom margin on last paragraph */
+        }
+
+        .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .font-semibold {
+             font-weight: 600; /* Consistent bold weight */
+             color: var(--text-color-dark); /* Dark text for file name */
+             font-size: 1.1em; /* Slightly larger font size */
+        }
+
+        .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .text-sm.text-gray-600 {
+             font-size: 0.9em; /* Consistent font size */
+             color: var(--text-color-light); /* Light text for uploaded by */
+        }
+
+        .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .text-sm.text-gray-500 {
+             font-size: 0.85em; /* Slightly smaller font size */
+             color: var(--text-color-light); /* Light text for date/details */
+        }
+
+
+        /* Buttons/Links within file cards */
+        .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition button,
+        .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition form button,
+        .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition a {
+             margin-top: var(--spacing-sm); /* Consistent spacing above buttons/links */
+             display: inline-block;
+             padding: 6px 12px; /* Adjusted padding */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             font-size: 0.85em; /* Adjusted font size */
+             font-weight: 600;
+             transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+             box-shadow: var(--shadow-light);
+             cursor: pointer;
+             border: none;
+             text-decoration: none;
+             font-family: 'Poppins', sans-serif;
+        }
+
+        /* Delete button */
+        .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .bg-red-500.hover\:bg-red-600 {
+             background-color: var(--button-danger-bg); /* Use danger color */
+             color: white;
+        }
+         .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .bg-red-500.hover\:bg-red-600:hover {
+             background-color: var(--button-danger-bg-hover); /* Darker danger on hover */
+             box-shadow: var(--shadow-medium);
+         }
+
+
+        /* Download button */
+        .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .bg-green-500.hover\:bg-green-600 {
+             background-color: var(--button-success-bg); /* Use success color */
+             color: white;
+             margin-left: var(--spacing-sm); /* Add space between delete and download */
+        }
+         .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .bg-green-500.hover\:bg-green-600:hover {
+             background-color: var(--button-success-bg-hover); /* Darker success on hover */
+             box-shadow: var(--shadow-medium);
+         }
+
+
+        /* View File link */
+        .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .bg-blue-500.hover\:bg-blue-600 {
+             background-color: var(--button-primary-bg); /* Use primary color */
+             color: white;
+             margin-left: var(--spacing-sm); /* Add space between download and view */
+        }
+         .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .bg-blue-500.hover\:bg-blue-600:hover {
+             background-color: var(--button-primary-bg-hover); /* Darker primary on hover */
+             box-shadow: var(--shadow-medium);
+         }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                 padding: var(--spacing-xs) var(--spacing-sm);
+            }
+            header .max-w-6xl.mx-auto.px-4.flex.justify-between.items-center {
+                 padding-left: var(--spacing-sm);
+                 padding-right: var(--spacing-sm);
+            }
+            header h1 {
+                 font-size: 1.3em;
+            }
+            header a {
+                 padding: 6px 12px;
+                 font-size: 0.9em;
+            }
+            main {
+                margin: var(--spacing-md) auto;
+                padding: 0 var(--spacing-sm);
+                gap: var(--spacing-md);
+            }
+             main section:first-of-type {
+                 padding: var(--spacing-md) var(--spacing-sm);
+                 gap: var(--spacing-xs);
+                 font-size: 0.9em;
+                 grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             }
+
+             main > div:nth-of-type(1) button {
+                 padding: 8px 15px;
+                 font-size: 0.9em;
+             }
+
+             #upload-form {
+                 padding: var(--spacing-md) var(--spacing-sm);
+             }
+             #upload-form h3 {
+                 font-size: 1.6em;
+                 margin-bottom: var(--spacing-md);
+             }
+             #upload-form .close-button {
+                 top: var(--spacing-sm);
+                 right: var(--spacing-sm);
+                 font-size: 1.3em;
+             }
+             #upload-form > div {
+                 margin-bottom: var(--spacing-md);
+             }
+             #upload-form label {
+                 font-size: 0.9em;
+                 margin-bottom: var(--spacing-xs);
+             }
+             #upload-form input[type="text"],
+             #upload-form .custom-file-upload-wrapper {
+                 padding: 8px 10px;
+                 font-size: 0.95em;
+             }
+             #upload-form .custom-file-upload-wrapper span {
+                 margin-right: var(--spacing-xs);
+             }
+              #upload-form p {
+                 font-size: 0.8em;
+                 margin-top: var(--spacing-xs);
+             }
+             #upload-form .custom-file-upload-wrapper label {
+                 padding: 6px 10px;
+                 font-size: 0.85em;
+             }
+             #upload-form button[type="submit"],
+             #upload-form .upload-button {
+                 padding: 8px 15px;
+                 font-size: 0.9em;
+             }
+
+
+            main section:last-of-type h2 {
+                 font-size: 1.3em;
+                 margin-bottom: var(--spacing-md);
+                 padding-bottom: 6px;
+            }
+             main section:last-of-type > p {
+                 margin-top: var(--spacing-md);
+             }
+
+            .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition {
+                 padding: var(--spacing-md);
+            }
+             .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition p {
+                 margin-bottom: var(--spacing-xs);
+             }
+             .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .font-semibold {
+                 font-size: 1em;
+             }
+             .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .text-sm.text-gray-600 {
+                 font-size: 0.85em;
+             }
+             .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .text-sm.text-gray-500 {
+                 font-size: 0.8em;
+             }
+
+             .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition button,
+             .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition form button,
+             .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition a {
+                 margin-top: var(--spacing-sm);
+                 padding: 5px 10px;
+                 font-size: 0.8em;
+             }
+              .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .bg-green-500.hover\:bg-green-600 {
+                 margin-left: var(--spacing-xs);
+             }
+              .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .bg-blue-500.hover\:bg-blue-600 {
+                 margin-left: var(--spacing-xs);
+             }
+        }
+
+         @media (max-width: 480px) {
+             header {
+                 padding: var(--spacing-xs) var(--spacing-xs);
+             }
+              header .max-w-6xl.mx-auto.px-4.flex.justify-between.items-center {
+                 padding-left: var(--spacing-xs);
+                 padding-right: var(--spacing-xs);
+             }
+              header h1 {
+                 font-size: 1.1em;
+             }
+             header a {
+                 padding: 5px 10px;
+                 font-size: 0.8em;
+             }
+             main {
+                 margin: var(--spacing-md) auto;
+                 padding: 0 var(--spacing-xs);
+                 gap: var(--spacing-md);
+             }
+              main section:first-of-type {
+                 padding: var(--spacing-sm) var(--spacing-xs);
+                 gap: var(--spacing-xs);
+                 font-size: 0.85em;
+                 grid-template-columns: 1fr; /* Stack on very small screens */
+             }
+
+             main > div:nth-of-type(1) button {
+                 padding: 6px 12px;
+                 font-size: 0.8em;
+             }
+
+             #upload-form {
+                 padding: var(--spacing-sm);
+             }
+              #upload-form h3 {
+                 font-size: 1.4em;
+                 margin-bottom: var(--spacing-md);
+             }
+              #upload-form .close-button {
+                 top: var(--spacing-xs);
+                 right: var(--spacing-xs);
+                 font-size: 1.1em;
+             }
+              #upload-form > div {
+                 margin-bottom: var(--spacing-sm);
+             }
+             #upload-form label {
+                 font-size: 0.85em;
+                 margin-bottom: var(--spacing-xs);
+             }
+              #upload-form input[type="text"],
+              #upload-form .custom-file-upload-wrapper {
+                 padding: 6px 8px;
+                 font-size: 0.9em;
+              }
+              #upload-form .custom-file-upload-wrapper span {
+                 margin-right: var(--spacing-xs);
+             }
+              #upload-form p {
+                 font-size: 0.75em;
+                 margin-top: var(--spacing-xs);
+             }
+              #upload-form .custom-file-upload-wrapper label {
+                 padding: 5px 8px;
+                 font-size: 0.8em;
+             }
+              #upload-form button[type="submit"],
+              #upload-form .upload-button {
+                 padding: 6px 12px;
+                 font-size: 0.85em;
+             }
+
+
+             main section:last-of-type h2 {
+                 font-size: 1.1em;
+                 margin-bottom: var(--spacing-md);
+             }
+              main section:last-of-type > p {
+                 margin-top: var(--spacing-md);
+             }
+
+             .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition {
+                 padding: var(--spacing-sm);
+             }
+              .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition p {
+                 margin-bottom: var(--spacing-xs);
+             }
+              .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .font-semibold {
+                 font-size: 0.9em;
+             }
+              .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .text-sm.text-gray-600 {
+                 font-size: 0.8em;
+             }
+              .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .text-sm.text-gray-500 {
+                 font-size: 0.75em;
+             }
+
+              .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition button,
+              .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition form button,
+              .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition a {
+                 margin-top: var(--spacing-sm);
+                 padding: 4px 8px;
+                 font-size: 0.75em;
+             }
+              .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .bg-green-500.hover\:bg-green-600 {
+                 margin-left: var(--spacing-xs);
+             }
+              .border.border-gray-200.p-4.rounded-xl.shadow-sm.hover\:shadow-md.transition .bg-blue-500.hover\:bg-blue-600 {
+                 margin-left: var(--spacing-xs);
+             }
+         }
+
+    </style>
+</head>
+<body>
+
+    {# Header #}
+    <header class="text-white py-4 shadow">
+        <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
+            <h1>{{ group_name|upper }}</h1>
+            {# Back button #}
+            <a href="{{ url_for('student') }}" class="bg-white text-blue-600 px-4 py-2 rounded hover:bg-gray-100 shadow-sm">Back</a>
+        </div>
+    </header>
+
+    {# Main Content Area #}
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+        {# Group/Subject Details Section #}
+        <section class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            <div><strong>Branch:</strong> {{ branch|upper }}</div>
+            <div><strong>Semester:</strong> {{ semester }}</div>
+            <div><strong>Subject:</strong> {{ subject|capitalize }}</div>
+            <div><strong>Teacher:</strong> {{ teacher_name }}</div>
+            <div><strong>CR Name:</strong> {{ cr_data.name }}</div>
+        </section>
+
+        {# Upload File Button #}
+        {% if can_upload %}
+        <div>
+            <button onclick="openForm()" class="bg-green-500 text-white px-5 py-2 rounded hover:bg-green-600 transition">Upload File</button>
+        </div>
+
+        {# Upload Form Modal #}
+        <div id="upload-form-container">
+            <form id="upload-form" method="POST" action="{{ url_for('cr_upload') }}" enctype="multipart/form-data">
+                {# Close button #}
+                <button type="button" class="close-button" onclick="hideUploadForm()">×</button>
+                <h3>Upload New File</h3>
+                <div>
+                    {# File input label and custom wrapper #}
+                    <label for="file-input">Choose File</label>
+                    <div class="custom-file-upload-wrapper">
+                        <span id="file-selected-name">No file chosen</span>
+                        <label for="file-input" class="bg-ddd text-black px-3 py-2 rounded cursor-pointer hover:bg-ccc transition text-sm">Browse</label>
+                    </div>
+                    {# Actual file input (hidden) #}
+                    <input type="file" id="file-input" name="file" accept=".doc,.docx,.ppt,.pptx,.pdf" required class="hidden">
+                </div>
+                {# Hidden inputs for group/subject details #}
+                <input type="hidden" id="groupname-upload" name="groupname" value="{{ group_name }}">
+                <input type="hidden" id="branch-upload" name="branch" value="{{ branch }}">
+                <input type="hidden" id="semester-upload" name="semester" value="{{ semester }}">
+                <input type="hidden" id="subject-upload" name="subject" value="{{ subject }}">
+                {# Upload submit button #}
+                <button type="submit" class="upload-button">Upload file</button>
+                {# Hint text #}
+                <p style="font-size: 0.8em; color: #777; margin-top: 10px;">Supported formats: doc, docx, ppt, pptx, pdf</p>
+            </form>
+        </div>
+
+        {% endif %}
+
+        {# File List Section #}
+        <section>
+            <h2>All content ({{ total_files|length }})</h2>
+
+            {% if total_files %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for file in total_files %}
+                {# Individual file card #}
+                <div class="border border-gray-200 p-4 rounded-xl shadow-sm hover:shadow-md transition">
+                    <p class="font-semibold">{{ file.file_name }}</p>
+                    <p class="text-sm text-gray-600">Uploaded by: {{ file.by }}</p>
+                    <p class="text-sm text-gray-500">Uploaded on: {{ file.uploaded_on }}</p>
+                    <p class="text-sm text-gray-500">Branch: {{ file.branch }} | Sem: {{ file.semester }}</p>
+
+                    {# Delete button (only if can_upload is true) #}
+                    {% if can_upload %}
+                        <form method="POST" action="{{ url_for('delete_indiv') }}" enctype="multipart/form-data" style="display: inline-block;">
+                            <input type="hidden" name="branch" value="{{ branch }}">
+                            <input type="hidden" name="semester" value="{{ semester }}">
+                            <input type="hidden" name="subject" value="{{ subject }}">
+                            <input type="hidden" name="fileid" value="{{ file.fileid }}">
+                            <input type="hidden" name="person" value="cr">
+                            <button type="submit" class="mt-2 inline-block bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition text-sm">Delete</button>
+                        </form>
+                    {% endif %}
+
+                    {# Download button #}
+                    <button onclick="downloadFile('{{ file.fileid }}')" class="mt-2 inline-block bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600 transition text-sm">Download</button>
+
+                    {# View File link #}
+                    <a href="{{ file.link }}" target="_blank" class="mt-2 inline-block bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 transition text-sm">View File</a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            {# No files message #}
+            <p class="text-gray-500">No files uploaded yet.</p>
+            {% endif %}
+        </section>
+
+    </main>
+
+    {# JavaScript remains unchanged #}
+    <script>
+        const uploadFormContainer = document.getElementById('upload-form-container');
+        const uploadForm = document.getElementById('upload-form');
+        const fileInput = document.getElementById('file-input');
+        const fileSelectedName = document.getElementById('file-selected-name');
+
+        function openForm() {
+            uploadFormContainer.style.display = 'flex';
+        }
+
+        function hideUploadForm() {
+            uploadFormContainer.style.display = 'none';
+            // Reset file input and display name when closing form
+            fileInput.value = ''; // Clear selected file
+            fileSelectedName.textContent = 'No file chosen';
+        }
+
+        window.addEventListener('click', function(event) {
+            if (event.target === uploadFormContainer) {
+                hideUploadForm();
+            }
+        });
+
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                 fileSelectedName.textContent = this.files[0].name;
+            } else {
+                fileSelectedName.textContent = 'No file chosen';
+            }
+        });
+
+        function downloadFile(id){
+        console.log(id)
+        const downloadUrl = `https://drive.google.com/uc?export=download&id=${id}`;
+        const downloadLink = document.createElement('a');
+        downloadLink.href = downloadUrl;
+        document.body.appendChild(downloadLink);
+        alert("Your download will start shortly"); // Consider replacing alert with a modal
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        }
+    </script>
+
+</body>
+</html>

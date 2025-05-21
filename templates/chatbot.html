@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Chatbot</title>
+    {# Link to Poppins font #}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    {# Link to Font Awesome for icons (although not used in current HTML, keeping it) #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBgzWkkmhxwOBGgFAWVLwVYlrwksG/g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        /* --- Variables --- */
+        :root {
+            --primary-color: #5a67d8; /* A modern purple/blue */
+            --primary-color-dark: #4c51bf;
+            --background-color: #eef2ff; /* Light clean background */
+            --card-background: #ffffff; /* White */
+            --header-bg-color: #e0e7ff; /* Light blueish-purple for header background */
+            --text-color-dark: #2d3748; /* Darker text for better contrast */
+            --text-color-light: #4a5568;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+
+            /* Chat specific colors */
+            --user-msg-bg: var(--primary-color);
+            --user-msg-color: white;
+            --bot-msg-bg: #e2e8f0; /* Light greyish-blue */
+            --bot-msg-color: var(--text-color-dark);
+            --recent-bg: #fff; /* White */
+            --recent-border: var(--primary-color);
+            --recent-color: var(--text-color-dark);
+            --upload-section-bg: var(--background-color);
+            --upload-border: #cbd5e0; /* Light grey */
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif; /* Use Poppins */
+            background: linear-gradient(to bottom right, #eef2ff, #e0e7ff); /* Subtle gradient */
+            margin: 0;
+            padding: var(--spacing-md); /* Consistent padding */
+            color: var(--text-color-light);
+            line-height: 1.6;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top */
+            min-height: 100vh;
+            /* Add padding-top to body to prevent fixed button from overlapping content (adjusted as per previous code) */
+             padding-top: calc(var(--spacing-md) + 40px); /* Example adjustment, verify needed padding */
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color-dark);
+            font-weight: 700;
+            margin-top: 0;
+        }
+
+        h2 { /* Styling the main chat title */
+             font-size: 2.2rem;
+             margin-bottom: var(--spacing-md);
+             text-align: center;
+             color: var(--primary-color);
+         }
+
+        h3 { /* Styling the upload section title */
+             font-size: 1.5em;
+             margin-bottom: var(--spacing-sm);
+             color: var(--text-color-dark);
+         }
+
+        /* --- Layout --- */
+        .chat-container {
+            width: 100%;
+            max-width: 700px; /* Keep original max-width */
+            margin: 0 auto; /* Center container */
+            background: var(--card-background); /* White background for the main container */
+            padding: var(--spacing-md); /* Consistent padding for the main container */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            box-shadow: var(--shadow-medium); /* Consistent shadow */
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md); /* Gap between the main content card and upload section */
+        }
+
+        /* New styling for the main chat content card */
+        .chat-main-content-card {
+            background-color: rgb(235, 242, 255); /* White background */
+            padding: var(--spacing-md); /* Consistent padding inside the card */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            box-shadow: var(--shadow-light); /* Consistent shadow */
+            border: 1px solid #eee; /* Light border */
+            display: flex; /* Use flex to manage inner elements */
+            flex-direction: column;
+            gap: var(--spacing-sm); /* Gap between elements inside this card */
+        }
+
+        #chatBox { /* Styling the chat message area */
+             flex-grow: 1;
+             overflow-y: auto; /* Enable scrolling */
+             max-height: 60vh; /* Limit height to make it scrollable */
+             padding-right: var(--spacing-xs); /* Add padding for scrollbar */
+             display: flex; /* Use flex for messages */
+             flex-direction: column;
+             gap: var(--spacing-sm); /* Gap between messages */
+             padding-bottom: var(--spacing-sm); /* Add padding below messages */
+         }
+
+        /* --- Components --- */
+         /* Styling for the "Recently Viewed" box */
+         #recentBox.recent {
+             background-color: var(--recent-bg); /* White background */
+             color: var(--recent-color); /* Dark text */
+             padding: var(--spacing-sm); /* Consistent padding */
+             /* margin-bottom handled by the gap in .chat-main-content-card */
+             border-left: 4px solid var(--recent-border); /* Primary color border */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             font-weight: 600;
+             box-shadow: var(--shadow-light);
+         }
+
+         #recentSubject {
+             color: var(--primary-color); /* Highlight subject name */
+         }
+
+
+        /* Subject buttons container */
+        #subject-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm); /* Consistent gap */
+            margin-top: var(--spacing-sm); /* Add margin top */
+            /* margin-bottom handled by the gap in .chat-main-content-card */
+            justify-content: center;
+        }
+
+        /* Styling for the subject buttons */
+        .subject-btn {
+            padding: 10px 20px; /* Adjusted padding */
+            border: none;
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            cursor: pointer;
+            font-weight: 600;
+            background: var(--primary-color); /* Primary color */
+            color: white;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            font-family: 'Poppins', sans-serif; /* Use Poppins */
+            font-size: 0.9em; /* Slightly smaller font size */
+        }
+
+        .subject-btn:hover {
+            background-color: var(--primary-color-dark); /* Darker primary on hover */
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Message Wrappers */
+        .msg-wrapper {
+             display: flex;
+             /* margin handled by gap in #chatBox */
+             align-items: flex-end; /* Align items to the bottom */
+             gap: var(--spacing-xs); /* Gap between emoji and message */
+             width: 100%; /* Ensure wrapper takes full width to justify content */
+        }
+
+        .msg-wrapper.user {
+             justify-content: flex-end; /* User messages on the right */
+         }
+
+        .msg-wrapper.bot {
+             justify-content: flex-start; /* Bot messages on the left */
+         }
+
+        /* Message Bubbles */
+        .bot-msg, .user-msg {
+            max-width: 80%; /* Keep max width */
+            padding: var(--spacing-sm) var(--spacing-md); /* Adjusted padding */
+            border-radius: 20px; /* Keep rounded corners */
+            font-size: 1em; /* Adjusted font size */
+            line-height: 1.5;
+            box-shadow: var(--shadow-light); /* Consistent shadow */
+            word-wrap: break-word;
+            overflow-wrap: break-word; /* Ensure long words break */
+        }
+
+        .user-msg {
+            background-color: var(--user-msg-bg); /* Primary color background */
+            color: var(--user-msg-color); /* White text */
+            border-bottom-right-radius: var(--spacing-xs); /* Adjusted corner radius */
+        }
+
+        .bot-msg {
+            background-color: var(--bot-msg-bg); /* Light background */
+            color: var(--bot-msg-color); /* Dark text */
+            border-bottom-left-radius: var(--spacing-xs); /* Adjusted corner radius */
+        }
+
+        .typing {
+            font-style: italic;
+            opacity: 0.7;
+        }
+
+        /* Emoji Styling */
+        .emoji {
+            font-size: 2rem; /* Larger emoji size */
+            flex-shrink: 0; /* Prevent emoji from shrinking */
+            line-height: 1; /* Adjust line height for alignment */
+        }
+
+        .msg-wrapper.bot .emoji {
+             margin-right: var(--spacing-xs); /* Space before bot message */
+         }
+
+        .msg-wrapper.user .emoji {
+             margin-left: var(--spacing-xs); /* Space before user message */
+         }
+
+        /* Upload Section */
+        .upload-section {
+            margin-top: var(--spacing-lg); /* Consistent spacing */
+            padding: var(--spacing-md); /* Consistent padding */
+            background: whitesmoke; /* Light background */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            box-shadow: var(--shadow-light); /* Consistent shadow */
+            border: 1px solid var(--upload-border); /* Light border */
+        }
+
+         .upload-section form {
+             display: flex;
+             flex-direction: column;
+             gap: var(--spacing-sm); /* Gap between form elements */
+         }
+
+         .upload-section input[type="file"] {
+             padding: 10px;
+             border: 1px solid #ccc;
+             border-radius: var(--border-radius);
+             box-sizing: border-box;
+             font-size: 1em;
+             background-color: var(--card-background); /* White background for file input */
+             color: var(--text-color-dark);
+         }
+         .upload-section input[type="file"]::file-selector-button {
+             background-color: var(--modal-file-upload-label-bg); /* Match browse button style */
+             color: var(--text-color-dark); /* Dark text */
+             padding: 8px 12px;
+             border-radius: var(--border-radius);
+             border: none;
+             cursor: pointer;
+             transition: background-color 0.2s ease-in-out;
+             font-size: 0.9em;
+             font-weight: 600;
+             margin-right: var(--spacing-sm);
+         }
+         .upload-section input[type="file"]::file-selector-button:hover {
+             background-color: var(--modal-file-upload-label-bg-hover);
+         }
+
+
+        /* Link/About Buttons (reused for upload button) */
+        .link-btn, .about-btn {
+            display: inline-flex; /* Use inline-flex */
+            align-items: center;
+            justify-content: center;
+            margin-right: var(--spacing-sm); /* Consistent margin right */
+            margin-top: var(--spacing-xs); /* Consistent margin top */
+            padding: 10px 15px; /* Consistent padding */
+            border: none;
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+             font-family: 'Poppins', sans-serif; /* Use Poppins */
+             font-size: 0.9em; /* Slightly smaller font size */
+        }
+
+        /* Specific styles for buttons */
+        .link-btn {
+            background-color: #28a745; /* Green color */
+        }
+
+        .about-btn {
+            background-color: #ffc107; /* Yellow color */
+            color: var(--text-color-dark); /* Dark text for yellow button */
+        }
+
+         .link-btn:hover, .about-btn:hover {
+              box-shadow: var(--shadow-light);
+         }
+
+         .link-btn:hover {
+             background-color: #218838; /* Darker green */
+         }
+
+         .about-btn:hover {
+             background-color: #e0a800; /* Darker yellow */
+         }
+
+        /* Upload status styling */
+        #uploadStatus {
+            margin-top: var(--spacing-sm); /* Consistent spacing */
+            font-size: 0.95em;
+            color: var(--text-color-dark);
+        }
+
+         #uploadStatus .link-btn { /* Style the download link in status */
+             margin-top: 0;
+             margin-right: 0;
+             padding: 6px 12px;
+             font-size: 0.9em;
+         }
+
+        /* --- Responsive Styles --- */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-sm);
+                /* Adjust body padding-top for fixed button on smaller screens */
+                padding-top: calc(var(--spacing-sm) + 40px);
+            }
+
+            .chat-container {
+                padding: var(--spacing-sm);
+                gap: var(--spacing-md);
+            }
+
+            .chat-main-content-card { /* Responsive padding for new card */
+                padding: var(--spacing-sm);
+                gap: var(--spacing-sm);
+            }
+
+
+            h2 {
+                 font-size: 1.8rem;
+             }
+
+            h3 {
+                 font-size: 1.3em;
+             }
+
+             #chatBox {
+                 max-height: 50vh; /* Adjust max height on smaller screens */
+                 gap: var(--spacing-xs); /* Smaller gap between messages */
+                 padding-bottom: var(--spacing-xs);
+             }
+
+             .bot-msg, .user-msg {
+                 padding: var(--spacing-xs) var(--spacing-sm);
+                 font-size: 0.9em;
+             }
+
+             .emoji {
+                 font-size: 1.8rem;
+                 line-height: 1; /* Ensure alignment */
+             }
+
+             .link-btn, .about-btn {
+                 padding: 8px 12px;
+                 font-size: 0.8em;
+                 margin-right: var(--spacing-xs);
+             }
+
+             #subject-buttons {
+                 gap: var(--spacing-xs);
+             }
+
+             .subject-btn {
+                 padding: 8px 15px;
+                 font-size: 0.9em;
+             }
+
+             .upload-section {
+                 padding: var(--spacing-sm);
+                 margin-top: var(--spacing-md);
+             }
+
+             .upload-section form {
+                gap: var(--spacing-xs);
+             }
+
+             .upload-section input[type="file"] {
+                 font-size: 0.9em;
+             }
+             .upload-section input[type="file"]::file-selector-button {
+                 padding: 6px 10px;
+                 font-size: 0.85em;
+                 margin-right: var(--spacing-xs);
+             }
+
+
+             #uploadStatus .link-btn {
+                 padding: 4px 8px;
+                 font-size: 0.8em;
+             }
+        }
+
+        @media (max-width: 480px) {
+            h2 {
+                 font-size: 1.6rem;
+             }
+            h3 {
+                 font-size: 1.2em;
+             }
+             .emoji {
+                 font-size: 1.5rem;
+                 line-height: 1; /* Ensure alignment */
+             }
+             .subject-btn {
+                 padding: 6px 12px;
+                 font-size: 0.8em;
+             }
+             .link-btn, .about-btn {
+                 padding: 6px 10px;
+                 font-size: 0.75em;
+             }
+             .bot-msg, .user-msg {
+                 font-size: 0.85em;
+             }
+
+             .upload-section input[type="file"]::file-selector-button {
+                 padding: 5px 8px;
+                 font-size: 0.8em;
+             }
+         }
+
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h2>🤖 Study Buddy</h2>
+
+        {# New div to wrap the main chat content in a card #}
+        <div class="chat-main-content-card">
+            <div id="recentBox" class="recent" style="display: none;">
+                Recently Viewed: <span id="recentSubject"></span>
+            </div>
+
+            <div id="chatBox">
+                <div class="msg-wrapper bot">
+                    <div class="emoji">👾</div>
+                    <div class="bot-msg">Select a subject to get started:</div>
+                </div>
+            </div>
+
+            <div id="subject-buttons"></div>
+        </div>
+
+
+        <div class="upload-section">
+            <h3>📄 Upload PDF for Summary</h3>
+            <form id="pdfForm">
+                <input type="file" name="pdf" accept=".pdf" required />
+                <button type="submit" class="link-btn">Upload & Summarize</button>
+            </form>
+            <div id="uploadStatus" style="margin-top: 10px;"></div>
+        </div>
+    </div>
+
+    <script>
+        async function loadSubjects() {
+            const res = await fetch('/get_subjects');
+            const data = await res.json();
+            const btnContainer = document.getElementById('subject-buttons');
+            const chatBox = document.getElementById('chatBox');
+
+            if (data === "..." || Object.keys(data).length === 0) {
+                chatBox.innerHTML = "<div class='msg-wrapper bot'><div class='emoji'>👾</div><div class='bot-msg'>No subjects added yet.</div></div>";
+            } else {
+                // Clear existing buttons before adding new ones
+                btnContainer.innerHTML = '';
+
+                for (let subject in data) {
+                    const btn = document.createElement('button');
+                    btn.className = 'subject-btn';
+                    btn.textContent = subject;
+
+                    btn.onclick = async () => {
+                        document.getElementById('recentSubject').textContent = subject;
+                        document.getElementById('recentBox').style.display = 'block';
+
+                        // Add user message
+                        chatBox.innerHTML += `
+                            <div class='msg-wrapper user'>
+                                <div class='user-msg'>${subject}</div>
+                                <div class='emoji'>👨🏽‍🦱</div>
+                            </div>`;
+                        chatBox.innerHTML += `
+                            <div class='msg-wrapper bot'>
+                                <div class='emoji'>👾</div>
+                                <div class='bot-msg typing'>Typing...</div>
+                            </div>`;
+                        chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
+
+                        // Simulate typing delay then fetch summary
+                        setTimeout(async () => {
+                            const res = await fetch('/generate-summary', {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({ noteText: data[subject].notes })
+                            });
+
+                            const summary = await res.json();
+
+                            // Remove typing indicator
+                            const typingIndicator = chatBox.querySelector('.typing');
+                            if (typingIndicator) {
+                                typingIndicator.remove();
+                            }
+
+
+                            // Add bot message with summary and video link
+                            chatBox.innerHTML += `
+                                <div class='msg-wrapper bot'>
+                                    <div class='emoji'>👾</div>
+                                    <div class='bot-msg'>
+                                        <strong>${subject}:</strong> ${data[subject].notes}<br>
+                                        <a class='link-btn' href='${data[subject].videoLink}' target='_blank'>🎥 Watch</a>
+                                    </div>
+                                </div>`;
+
+                            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
+                        }, 1000); // 1 second delay
+                    };
+
+                    btnContainer.appendChild(btn);
+                }
+            }
+        }
+
+        document.getElementById('pdfForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const statusDiv = document.getElementById('uploadStatus');
+            statusDiv.textContent = 'Processing...';
+
+            const res = await fetch('/upload-pdf', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await res.json();
+
+            if (data.download_link) {
+                statusDiv.innerHTML = `✅ Summary Ready: <a href="${data.download_link}" class="link-btn">Download PDF</a>`;
+            } else {
+                statusDiv.textContent = `❌ Error: ${data.error}`;
+            }
+        });
+
+        loadSubjects();
+    </script>
+</body>
+</html>

@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Student - College Notes Portal</title>
+    {# Include Tailwind CSS with plugins and custom color config #}
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-navy': { // Define a custom color named 'primary-navy'
+                            50: '#eef2ff',    // Lighter shade
+                            100: '#e0e7ff',   // Lighter shade
+                            200: '#c7d2fe',   // Lighter shade
+                            300: '#a5b4fc',   // Lighter shade
+                            400: '#818cf8',   // Medium shade
+                            500: '#6366f1',   // Medium shade
+                            600: '#4f46e5',   // Medium shade
+                            700: '#4338ca',   // Darker shade
+                            800: '#3730a3',   // Darker shade
+                            900: '#312e81',   // Darker shade
+                            950: '#1e1b4b',   // Darkest shade
+                            DEFAULT: '#5a67d8', // Our navy blue primary color
+                        },
+                         // Adding a green palette (included for theme consistency)
+                        'primary-green': {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf2c9',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#0f3a21',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    {# Link to Poppins font #}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    {# Link to Font Awesome for icons #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBgzWkkmhxwOBGgFAWVLwVYlrwksG/g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* --- Variables --- */
+        :root {
+            --primary-color: #4553da; /* Our modern navy blue */
+            --primary-color-dark: #474cbd;
+            --background-color: #dfebff; /* Light clean background */
+            --card-background: #ffffff; /* White */
+            --header-bg-color: #e0e7ff; /* Light blueish-purple for header background */
+            --text-color-dark: #2d3748; /* Darker text for better contrast */
+            --text-color-light: #4a5568;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+
+            /* Button colors */
+            --button-danger-bg: #dc3545; /* Red for logout */
+            --button-danger-bg-hover: #c82333;
+
+            /* Card specific colors */
+            --card-common-bg: #e0f7fa; /* Light blueish background for common cards */
+            --card-common-border: #b2ebf2;
+            --card-individual-bg: #e8eaf6; /* Light purplish background for individual cards */
+            --card-individual-border: #c5cbe9;
+            --card-title-common-bg: linear-gradient(135deg, #00b894, #00a88a); /* Greenish gradient for common card title */
+            --card-title-common-bg-hover: linear-gradient(135deg, #00a88a, #00917d);
+            --card-title-individual-bg: linear-gradient(135deg, var(--primary-color), var(--primary-color-dark)); /* Primary color gradient for individual card title */
+            --card-title-individual-bg-hover: linear-gradient(135deg, var(--primary-color-dark), #3b44a2);
+            --chatbot-button-bg: #ff9800; /* Orange color for chatbot button */
+            --chatbot-button-bg-hover: #f57c00;
+            --chatbot-button-border: #f57c00;
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif; /* Use Poppins for consistency */
+            background: linear-gradient(to bottom right, #eef2ff, #e0e7ff); /* Subtle gradient background */
+            margin: 0;
+            padding: var(--spacing-md); /* Adjusted padding */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            line-height: 1.6; /* Improved readability */
+            box-sizing: border-box;
+            position: relative; /* Needed for fixed logout button */
+            /* Add padding-top to body to prevent fixed button from overlapping content */
+            padding-top: calc(var(--spacing-md) + 40px); /* Adjust based on button height and spacing */
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color-dark);
+            font-weight: 700;
+            margin-top: 0;
+        }
+
+         h2.section-title { /* Styling the existing section title */
+             font-size: 1.8rem; /* Consistent heading size */
+             margin: var(--spacing-lg) 0 var(--spacing-md); /* Consistent spacing */
+             border-bottom: 2px solid var(--primary-color); /* Use primary color for border */
+             padding-bottom: 10px; /* Consistent padding */
+             color: var(--text-color-dark); /* Use dark text color */
+             font-weight: 700; /* Ensure bold */
+             text-align: center; /* Center the section title */
+         }
+
+
+        /* --- Layout --- */
+        .chat-container { /* Styling the existing chat-container as the main container */
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto var(--spacing-md) auto; /* Adjusted margin - removed top margin */
+            padding: var(--spacing-md);
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            z-index: 1;
+             /* Removed padding-top as padding is added to the body */
+             padding-top: var(--spacing-md);
+        }
+
+        .group-grid.common-grid { /* Styling the common group grid */
+             display: grid; /* Use grid for common cards */
+             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+             gap: var(--spacing-md); /* Consistent gap */
+             margin-bottom: var(--spacing-lg); /* Consistent spacing */
+        }
+
+         .group-grid.individual-grid { /* Styling the individual group grid */
+             display: flex; /* Keep flexbox as per original */
+             flex-direction: column; /* Stack items vertically */
+             gap: var(--spacing-sm); /* Add gap between individual cards */
+             margin-bottom: var(--spacing-lg); /* Consistent spacing */
+         }
+
+
+        /* --- Components --- */
+        /* Container for the logout button - now just a marker, button is fixed */
+        .logout-button-container {
+             /* Removed all positioning and layout styles */
+             margin: 0;
+             padding: 0;
+             height: 0;
+             width: 100%; /* Still give it width for centering context if needed */
+             position: relative; /* Keep relative if body padding isn't enough */
+             max-width: 960px; /* Match main container width */
+             margin: 0 auto; /* Center the container */
+        }
+
+        /* Logout button - positioned fixed at top right of the viewport */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            background-color: var(--button-danger-bg); /* Red color for logout */
+            color: white;
+            padding: 10px 15px; /* Consistent padding */
+            border-radius: var(--border-radius); /* Use shared border-radius */
+            transition: all 0.2s ease-in-out;
+            font-weight: 600;
+            border: 1px solid var(--button-danger-bg-hover); /* Darker red border */
+            box-shadow: var(--shadow-light); /* Use shared shadow */
+            /* Fixed positioning relative to the viewport */
+            position: fixed;
+            top: 20px; /* Distance from the top of the viewport */
+            right: 20px; /* Distance from the right of the viewport */
+            z-index: 100; /* Ensure it's on top of everything */
+        }
+
+        .back-button:hover {
+            background-color: var(--button-danger-bg-hover); /* Darker red on hover */
+            box-shadow: var(--shadow-medium); /* Slightly stronger shadow on hover */
+        }
+
+        .back-button i {
+            margin-right: 8px; /* Consistent spacing for icon */
+        }
+
+        /* Adjusted style for the Student Panel label - Blue text, White background */
+        .student-Panel-label {
+         /* White background as requested */
+            color: var(--primary-color); /* Blue color as requested */
+            font-weight: 700; /* Bolder */
+            text-align: center;
+            padding: var(--spacing-sm) var(--spacing-md); /* Consistent padding */
+            border-radius: var(--border-radius); /* Use shared border-radius */
+            font-size: 3.0rem; /* Larger font size */
+            margin-bottom: var(--spacing-md); /* Consistent spacing */
+             /* Use shared shadow */
+            text-shadow: none; /* Remove original text shadow */
+             /* Add a light border */
+        }
+
+        /* Styling the header div with a distinct background color */
+        .header {
+            background: var(--header-bg-color); /* Light blueish-purple background */
+            padding: var(--spacing-md); /* Consistent padding */
+            border-radius: var(--border-radius); /* Use shared border-radius */
+            margin-bottom: var(--spacing-lg); /* Consistent spacing */
+            border: 1px solid #c5cbe9; /* Border color matching individual card border */
+            box-shadow: var(--shadow-light); /* Use shared shadow */
+        }
+
+        /* Styled the student info card as a distinct white card within the colored header */
+        .student-info-card {
+            flex-grow: 0; /* Prevent it from growing */
+            flex-shrink: 0; /* Prevent it from shrinking */
+            width: 100%; /* Take full width of header padding */
+            /* White background */
+            padding: var(--spacing-md); /* Add padding */
+            border-radius: var(--border-radius); /* Add border-radius */
+           /* Add shadow */
+            text-align: left; /* Align text left */
+             box-sizing: border-box; /* Include padding in width */
+         /* Add a light border */
+        }
+
+        .student-info-card p {
+            margin: var(--spacing-xs) 0; /* Consistent spacing */
+            color: var(--text-color-dark); /* Use darker text color */
+            font-size: 1em; /* Standard font size */
+        }
+
+        .student-info-card strong {
+            color: var(--primary-color); /* Use primary color for strong text */
+            font-weight: 600; /* Make it bold */
+        }
+
+        /* Styling the common and individual group cards */
+        .card-link { /* Applying card styles to the card-link divs */
+            padding: var(--spacing-md); /* Consistent padding */
+            border-radius: var(--border-radius); /* Use shared border-radius */
+            box-shadow: var(--shadow-light); /* Use shared shadow */
+            position: relative;
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid transparent; /* Add transparent border */
+             text-decoration: none; /* Remove underline from card link */
+             display: block; /* Ensure card links behave as blocks for width */
+             width: 100%; /* Make card links take full width of grid/flex item */
+        }
+
+         /* Specific styles for common cards */
+         .card-common {
+             background: var(--card-common-bg); /* Light blueish background */
+             border-color: var(--card-common-border);
+         }
+
+         .card-common:hover {
+             transform: translateY(-10px); /* Consistent hover effect */
+             box-shadow: var(--shadow-medium);
+             border-color: #80deea;
+         }
+
+         /* Specific styles for individual cards */
+         .card-individual {
+             background: var(--card-individual-bg); /* Light purplish background */
+             border-color: var(--card-individual-border);
+         }
+
+         .card-individual:hover {
+             transform: translateY(-10px); /* Consistent hover effect */
+             box-shadow: var(--shadow-medium);
+             border-color: #9fa8da;
+         }
+
+
+        .card-title { /* Styling the card title div */
+            font-weight: 700; /* Bolder */
+            margin-bottom: var(--spacing-sm); /* Consistent spacing */
+            padding: var(--spacing-xs) var(--spacing-sm); /* Adjusted padding */
+            border-radius: var(--border-radius); /* Use shared border-radius */
+            color: #fff; /* White text */
+            display: inline-flex; /* Use inline-flex for icon and text alignment */
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-title i {
+             margin-right: var(--spacing-xs); /* Space between icon and text */
+        }
+
+
+        .card-common .card-title { /* Background for common card title */
+            background: var(--card-title-common-bg); /* Greenish gradient */
+        }
+
+        .card-common .card-title:hover {
+            background: var(--card-title-common-bg-hover);
+            transform: scale(1.05); /* Slightly smaller scale effect */
+             box-shadow: var(--shadow-light);
+        }
+
+        .card-individual .card-title { /* Background for individual card title */
+            background: var(--card-title-individual-bg); /* Primary color gradient */
+        }
+
+        .card-individual .card-title:hover {
+            background: var(--card-title-individual-bg-hover);
+            transform: scale(1.05); /* Slightly smaller scale effect */
+            box-shadow: var(--shadow-light);
+        }
+
+         .card-link .card-title a { /* Style the link inside the card title */
+             color: inherit; /* Inherit white color from the title */
+             text-decoration: none; /* Remove underline */
+         }
+
+        .card-meta { /* Styling the card meta text */
+            font-size: 0.9em; /* Slightly larger meta text */
+            color: var(--text-color-light); /* Use light text color */
+            text-align: center; /* Center meta text */
+        }
+
+        .empty-message { /* Styling the empty message */
+            color: var(--text-color-light);
+            font-style: italic;
+            text-align: center;
+            margin-top: var(--spacing-md); /* Consistent spacing */
+            font-size: 1.1em;
+        }
+
+         .empty-message i {
+             margin-right: var(--spacing-xs);
+         }
+
+
+        .chatbot-card { /* Styling the chatbot card */
+            background-color: #fef8e0; /* White background */
+            padding: var(--spacing-md); /* Consistent padding */
+            border-radius: var(--border-radius); /* Use shared border-radius */
+            text-align: center;
+            box-shadow: var(--shadow-light); /* Use shared shadow */
+            border: 1px solid #eee; /* Lighter border */
+            margin-top: var(--spacing-lg); /* Consistent spacing */
+        }
+
+        .chatbot-card-title { /* Styling chatbot card title */
+            font-size: 1.25em;
+            margin-bottom: var(--spacing-sm); /* Consistent spacing */
+            color: var(--text-color-dark); /* Use dark text color */
+            font-weight: 600;
+        }
+
+        .chatbot-card a { /* Styling chatbot link button */
+            display: inline-flex; /* Use inline-flex */
+            align-items: center;
+            justify-content: center;
+            padding: 10px 16px;
+            background-color: var(--chatbot-button-bg); /* Orange color */
+            color: #fff;
+            border-radius: var(--border-radius); /* Use shared border-radius */
+            text-decoration: none;
+            border: 1px solid var(--chatbot-button-border); /* Darker orange border */
+            font-weight: 600;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+         .chatbot-card a:hover {
+             background-color: var(--chatbot-button-bg-hover); /* Darker orange on hover */
+             box-shadow: var(--shadow-light);
+         }
+
+         .chatbot-card-title i {
+             margin-left: var(--spacing-xs); /* Space for icon */
+         }
+
+         .chatbot-card a i {
+             margin-right: var(--spacing-xs); /* Space for icon */
+         }
+
+
+        /* The .button-link and .button styles from your original HTML are not used
+           in the provided structure snippets, so they are kept but might need
+           adjustments if used elsewhere. */
+         .button-link {
+             text-decoration: none;
+         }
+
+         .button {
+             background-color: #1563ff;
+             color: white;
+             padding: 10px 20px;
+             border-radius: 6px;
+             border: none;
+             cursor: pointer;
+             transition: background-color 0.2s ease-in-out;
+         }
+
+         .button:hover {
+             background-color: #0028b8;
+         }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) { /* Adjust breakpoint for wider container */
+             .chat-container {
+                 max-width: 768px; /* Smaller max-width on medium screens */
+             }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-sm); /* Reduced padding */
+                /* Adjust body padding-top for fixed button on smaller screens */
+                padding-top: calc(var(--spacing-sm) + 40px);
+            }
+
+            .chat-container {
+                padding: var(--spacing-sm); /* Reduced padding */
+                margin: var(--spacing-sm) auto; /* Adjusted margin */
+                 padding-top: var(--spacing-md); /* Adjust container padding-top */
+            }
+
+            h2.section-title {
+                font-size: 1.6rem; /* Slightly smaller heading */
+                margin: var(--spacing-md) 0 var(--spacing-sm); /* Adjusted spacing */
+            }
+
+            .student-Panel-label {
+                font-size: 2.2rem; /* Adjusted font size */
+                padding: var(--spacing-xs) var(--spacing-sm); /* Adjusted padding */
+                margin-bottom: var(--spacing-md); /* Adjusted spacing */
+            }
+
+
+            .group-grid.common-grid { /* Common grid stacks */
+                 grid-template-columns: 1fr; /* Stack cards vertically */
+                 gap: var(--spacing-sm); /* Adjusted gap */
+                 margin-bottom: var(--spacing-md); /* Adjusted spacing */
+            }
+
+            .common-grid .card-link { /* Common cards take full width */
+                 width: 100%;
+                 padding: var(--spacing-sm); /* Adjusted padding */
+            }
+
+
+            .group-grid.individual-grid { /* Individual grid gap */
+                gap: var(--spacing-xs); /* Adjusted gap */
+                 margin-bottom: var(--spacing-md); /* Adjusted spacing */
+            }
+
+             .individual-grid .card-link { /* Individual cards padding */
+                 padding: var(--spacing-sm); /* Adjusted padding */
+                 margin-bottom: 0; /* Remove margin as gap handles it */
+             }
+
+            .card-title {
+                 font-size: 1.3rem; /* Adjusted font size */
+                 padding: var(--spacing-xs); /* Adjusted padding */
+                 margin-bottom: var(--spacing-xs); /* Adjusted spacing */
+            }
+
+            .card-meta {
+                font-size: 0.8em; /* Adjusted font size */
+            }
+
+            .back-button {
+                padding: 8px 12px; /* Adjusted padding */
+                font-size: 0.9em;
+                border-radius: 6px;
+            }
+
+            .back-button i {
+                margin-right: 6px;
+            }
+
+            .chatbot-card {
+                 padding: var(--spacing-sm); /* Adjusted padding */
+                 margin-top: var(--spacing-md); /* Adjusted spacing */
+            }
+
+             .chatbot-card-title {
+                 font-size: 1.1em;
+                 margin-bottom: var(--spacing-xs);
+             }
+
+             .chatbot-card a {
+                 padding: 6px 10px;
+                  font-size: 0.85em;
+             }
+        }
+
+         /* For smaller mobile devices */
+         @media (max-width: 480px) {
+              body {
+                  padding: var(--spacing-xs);
+              }
+              .chat-container {
+                  padding: var(--spacing-xs);
+                  margin: var(--spacing-xs) auto;
+              }
+              h2.section-title {
+                  font-size: 1.4rem;
+              }
+
+              .student-Panel-label {
+                   font-size: 1.7rem;
+              }
+
+              .card-title {
+                   font-size: 1.1rem;
+              }
+
+              .back-button {
+                   padding: 6px 10px;
+                   font-size: 0.85em;
+              }
+
+               .chatbot-card-title {
+                   font-size: 1em;
+               }
+
+               .chatbot-card a {
+                   padding: 6px 10px;
+                   font-size: 0.85em;
+               }
+
+         }
+    </style>
+</head>
+<body>
+
+    {# Container for the logout button - positioned relative for absolute child #}
+    {# This container now has zero height and provides the positioning context #}
+    <div class="logout-button-container">
+        {# The logout button - positioned absolutely at top right #}
+        <a href="{{ url_for('back_student') }}" class="back-button"><i class="fas fa-arrow-left"></i>Logout</a>
+    </div>
+
+    {# Main content container #}
+    <div class="chat-container">
+        {# Student Panel label - blue text, white background #}
+        <div class="student-Panel-label">Student Panel</div>
+
+        {# Header div - now with a colored background #}
+        <div class="header">
+            {# Student info card - now with white background, padding, border-radius, and shadow #}
+            <div class="student-info-card">
+                {% if student_data %}
+                    <p><strong>ID:</strong> {{ student_data.initials }}{{ student_data.id }}</p>
+                    <p><strong>Name:</strong> {{ student_data.name }}</p>
+                    <p><strong>Branch:</strong> {{ student_data.branch|capitalize }}</p>
+                    <p><strong>Semester:</strong> {{ student_data.semester }} semester</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Section title for Common Resources #}
+        <h2 class="section-title">📚 Common Resources</h2>
+        {# Grid container for common groups #}
+        <div class="group-grid common-grid">
+            {# Loop through common groups #}
+            {% for group in common_groups %}
+                {% if group.can_access %}
+                    {# Card link for common group #}
+                    <div class="card-link card-common">
+                        {# Card title #}
+                        <div class="card-title">
+                            <i class="fas fa-folder-open mr-2"></i>
+                            {# Link within card title #}
+                            <a href="#" onclick="send_data_to_python('common','{{ group.groupname }}','', '', '{{ group.created_by }}', '{{ group.created_on }}', '{{ group.can_access }}', '{{ student_data.id }}', '{{ student_data.name }}', '{{ student_data.branch }}', '{{ student_data.semester }}', '{{ student_data.role }}',  '{{ group.members|join(',') }}', '{{ can_edit }}')" style="color:white; text-decoration:none;">
+                                {{ group.groupname }}
+                            </a>
+                        </div>
+                        {# Card meta #}
+                        <p class="card-meta">Created by: {{ group.created_by }}</p>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        {# Section title for Individual Groups #}
+        <h2 class="section-title">👥 Individual Groups</h2>
+        {# Flex container for individual groups #}
+        <div class="group-grid individual-grid">
+            {% if individual_groups %}
+                {# Loop through individual groups #}
+                {% for group in individual_groups %}
+                    {% if group.can_access %}
+                        {# Card link for individual group #}
+                        <div class="card-link card-individual">
+                            {# Card title #}
+                            <div class="card-title">
+                                <i class="fas fa-graduation-cap mr-2"></i>
+                                {# Link within card title #}
+                                <a href="#" onclick="send_data_to_python('non-common','{{ group.groupname }}','{{ group.branch }}', '{{ group.semester }}', '{{ group.created_by }}', '{{ group.created_on }}', '{{ group.can_access }}', '{{ student_data.id }}', '{{ student_data.name }}', '{{ student_data.branch }}', '{{ student_data.semester }}', '{{ student_data.role }}', '', '{{ can_edit }}')" style="color:white; text-decoration:none;">
+                                    {{ group.groupname|upper }}
+                                </a>
+                            </div>
+                            {# Card meta #}
+                            <p class="card-meta">Created by: {{ group.created_by }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {# Empty message #}
+                <p class="empty-message"><i class="fas fa-info-circle mr-2"></i>No individual groups available.</p>
+            {% endif %}
+        </div>
+
+        {# Chatbot card #}
+        <div class="chatbot-card">
+            {# Chatbot card title #}
+            <div class="chatbot-card-title">Need direct access to video lectures? Chat with our Assistant <i class="fas fa-robot mr-2"></i></div>
+            {# Chatbot link button #}
+            <a href="{{ url_for('chatbot_ui') }}" target="_blank"><i class="fas fa-robot mr-2"></i>Start Bot 🤖</a>
+        </div>
+    </div>
+
+    {# JavaScript block #}
+    <script>
+        // Javascript remains the same
+        function send_data_to_python(type, gname, gbranch, gsemester, gcreatedby, gcreatedon, gcanaccess, sid, sname, sbranch, semester, srole, gmembers, canedit){
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ url_for("show_group") }}';
+
+            function addHiddenInput(name, value) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                form.appendChild(input);
+            }
+
+            addHiddenInput('type', type);
+            addHiddenInput('groupname', gname);
+            addHiddenInput('group_branch', gbranch);
+            addHiddenInput('group_semester', gsemester);
+            addHiddenInput('created_by', gcreatedby);
+            addHiddenInput('created_on', gcreatedon);
+            addHiddenInput('can_access', gcanaccess);
+            addHiddenInput('student_id', sid);
+            addHiddenInput('student_name', sname);
+            addHiddenInput('student_branch', sbranch);
+            addHiddenInput('student_semester', semester);
+            addHiddenInput('student_role', srole);
+            addHiddenInput('members', gmembers);
+            addHiddenInput('can_edit', canedit === true ? "True" : "False");
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+</body>
+</html>

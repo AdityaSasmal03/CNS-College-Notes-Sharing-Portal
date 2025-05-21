@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - College Notes Portal</title>
+    {# Include Tailwind CSS with plugins and custom color config #}
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-navy': { // Define a custom color named 'primary-navy'
+                            50: '#eef2ff',    // Lighter shade
+                            100: '#e0e7ff',   // Lighter shade
+                            200: '#c7d2fe',   // Lighter shade
+                            300: '#a5b4fc',   // Lighter shade
+                            400: '#818cf8',   // Medium shade
+                            500: '#6366f1',   // Medium shade
+                            600: '#4f46e5',   // Medium shade
+                            700: '#4338ca',   // Darker shade
+                            800: '#3730a3',   // Darker shade
+                            900: '#312e81',   // Darker shade
+                            950: '#1e1b4b',   // Darkest shade
+                            DEFAULT: '#5a67d8', // Our navy blue primary color
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    {# Link to Poppins font #}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    {# Link to Font Awesome for icons #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBgzWkkmhxwOBGgFAWVLwVYlrwksG/g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* --- Variables --- */
+        :root {
+            --primary-color: #5a67d8; /* Our modern navy blue */
+            --primary-color-dark: #4c51bf;
+            --background-color: #f7fafc; /* Light clean background */
+            --card-background: #ffffff; /* White */
+            --text-color-dark: #2d3748; /* Darker text for better contrast */
+            --text-color-light: #4a5568;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+
+             /* Button specific colors */
+             --button-primary-bg: var(--primary-color);
+             --button-primary-bg-hover: var(--primary-color-dark);
+             --button-secondary-bg: #6c757d; /* Grey for back button */
+             --button-secondary-bg-hover: #5a6268;
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif; /* Use Poppins for consistency */
+            /* Background handled by Tailwind classes */
+            /* Centering handled by Tailwind classes */
+            margin: 0;
+            color: var(--text-color-light); /* Default text color using variable */
+            line-height: 1.6;
+            box-sizing: border-box;
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color-dark); /* Ensure headings use the dark text color variable */
+            font-weight: 700; /* Consistent bold weight for headings */
+            margin-top: 0;
+        }
+
+        p {
+             color: var(--text-color-light); /* Ensure paragraphs use the light text color variable */
+        }
+
+        /* --- Component Adjustments --- */
+
+        /* Style for the back button */
+        .back-button {
+            position: absolute;
+            top: var(--spacing-md); /* Use variable for top spacing */
+            right: var(--spacing-md); /* Use variable for right spacing */
+            background-color: var(--button-secondary-bg); /* Use grey color variable */
+            color: white; /* White text for grey button */
+            font-weight: 600; /* Consistent font weight */
+            padding: 10px 16px; /* Consistent padding */
+            border-radius: var(--border-radius); /* Use variable for border-radius */
+            box-shadow: var(--shadow-light); /* Use variable for shadow */
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Consistent transition */
+            text-decoration: none; /* Remove underline */
+            display: inline-flex; /* Align icon and text */
+            align-items: center;
+            z-index: 10; /* Ensure it's above other content */
+            border: none; /* Remove default button border */
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            background-color: var(--button-secondary-bg-hover); /* Darker grey on hover */
+            box-shadow: var(--shadow-medium);
+        }
+
+        .back-button i {
+             margin-right: var(--spacing-xs); /* Consistent space for icon */
+        }
+
+
+        /* Style for the main register card container */
+        .bg-white.p-8.rounded-xl.shadow-lg.w-full.max-w-md {
+             background-color: var(--card-background); /* Use white background variable */
+             padding: var(--spacing-md); /* Use consistent padding variable */
+             border-radius: var(--border-radius); /* Use consistent border-radius variable */
+             box-shadow: var(--shadow-medium); /* Use consistent shadow variable */
+             width: 100%; /* Keep full width on small screens */
+             max-width: 400px; /* Adjusted max-width slightly for better look */
+             border: 1px solid #eee; /* Add a light border */
+        }
+
+        /* Style for the register heading */
+        .text-2xl.font-bold.mb-6.text-center {
+             font-size: 2rem; /* Adjusted font size */
+             font-weight: 700; /* Consistent bold weight */
+             text-align: center;
+             color: var(--text-color-dark); /* Use dark text color variable */
+             margin-bottom: var(--spacing-md); /* Use consistent spacing variable */
+             border-bottom: 2px solid var(--primary-color); /* Add primary color underline */
+             padding-bottom: var(--spacing-xs); /* Add padding below underline */
+        }
+
+        /* Style for form labels */
+        .block.text-sm.font-medium.text-gray-700 {
+             display: block;
+             font-size: 0.95em; /* Adjusted font size */
+             font-weight: 600; /* Consistent bold weight */
+             color: var(--text-color-dark); /* Use dark text color variable */
+             margin-bottom: var(--spacing-xs); /* Use consistent spacing variable */
+        }
+
+        /* Style for form inputs */
+        .mt-1.block.w-full.px-3.py-2.border.border-gray-300.rounded-md.shadow-sm {
+             margin-top: var(--spacing-xs); /* Use consistent spacing variable */
+             display: block;
+             width: 100%;
+             padding: 10px 12px; /* Adjusted padding */
+             border: 1px solid #ccc; /* Consistent border */
+             border-radius: var(--border-radius); /* Use consistent border-radius variable */
+             box-shadow: var(--shadow-light); /* Use consistent shadow variable */
+             font-size: 1em;
+             color: var(--text-color-dark); /* Use dark text color variable */
+             line-height: 1.5;
+             font-family: 'Poppins', sans-serif;
+             transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Consistent transition */
+        }
+
+        /* Style for input focus state */
+         .mt-1.block.w-full.px-3.py-2.border.border-gray-300.rounded-md.shadow-sm:focus {
+             outline: none; /* Remove default outline */
+             border-color: var(--primary-color); /* Primary color border on focus */
+             box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.3); /* Primary color glow on focus */
+             /* Removed default Tailwind focus ring classes */
+         }
+
+
+        /* Style for the submit button */
+        .w-full.bg-blue-500.hover\:bg-blue-600.text-white.font-semibold.py-2.px-4.rounded-md {
+             width: 100%;
+             background-color: var(--button-primary-bg); /* Use primary color variable */
+             color: white;
+             font-weight: 600; /* Consistent bold weight */
+             padding: 10px 20px; /* Adjusted padding */
+             border-radius: var(--border-radius); /* Use consistent border-radius variable */
+             transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Consistent transition */
+             box-shadow: var(--shadow-light); /* Use consistent shadow variable */
+             cursor: pointer;
+             font-family: 'Poppins', sans-serif;
+             border: none; /* Remove default button border */
+             margin-top: var(--spacing-md); /* Add space above button */
+        }
+
+        /* Style for the submit button hover state */
+        .w-full.bg-blue-500.hover\:bg-blue-600.text-white.font-semibold.py-2.px-4.rounded-md:hover {
+             background-color: var(--button-primary-bg-hover); /* Use darker primary color variable on hover */
+             box-shadow: var(--shadow-medium); /* Consistent shadow on hover */
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+             .back-button {
+                 top: var(--spacing-sm);
+                 right: var(--spacing-sm);
+                 padding: 8px 12px;
+                 font-size: 0.9em;
+             }
+             .back-button i {
+                 margin-right: 6px;
+             }
+
+            .bg-white.p-8.rounded-xl.shadow-lg.w-full.max-w-md {
+                 padding: var(--spacing-sm); /* Reduce padding on smaller screens */
+            }
+             .text-2xl.font-bold.mb-6.text-center {
+                 font-size: 1.8rem;
+                 margin-bottom: var(--spacing-md);
+             }
+             .block.text-sm.font-medium.text-gray-700 {
+                 font-size: 0.9em;
+                 margin-bottom: var(--spacing-xs);
+             }
+             .mt-1.block.w-full.px-3.py-2.border.border-gray-300.rounded-md.shadow-sm {
+                 padding: 8px 10px;
+                 font-size: 0.95em;
+                 margin-top: var(--spacing-xs);
+             }
+              .w-full.bg-blue-500.hover\:bg-blue-600.text-white.font-semibold.py-2.px-4.rounded-md {
+                 padding: 8px 15px;
+                 font-size: 0.9em;
+                 margin-top: var(--spacing-md);
+              }
+        }
+
+    </style>
+    <script>
+        // Using a simple alert as per original JS, but recommend a modal for better UX
+        var info_from_python = "{{ error }}";
+        if (info_from_python) {
+            alert(info_from_python);
+        }
+    </script>
+</head>
+{# Updated body background gradient to use custom primary-navy colors #}
+<body class="bg-gradient-to-br from-primary-navy-50 to-primary-navy-100 min-h-screen flex items-center justify-center relative">
+
+    {# Styled back button #}
+    <a href="{{ url_for('admin') }}" class="back-button">
+        <i class="fa-solid fa-arrow-left"></i> Back
+    </a>
+
+    {# Styled main register card container #}
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        {# Styled register heading #}
+        <h2 class="text-2xl font-bold mb-6 text-center">Register</h2>
+        <form method="POST" action="{{ url_for('register') }}" enctype="multipart/form-data" class="space-y-5">
+
+            <div>
+                {# Styled label #}
+                <label class="block text-sm font-medium text-gray-700">Username</label>
+                {# Styled input #}
+                <input name="name" placeholder="Enter name"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-navy-500">
+            </div>
+
+            <div>
+                {# Styled label #}
+                <label class="block text-sm font-medium text-gray-700">Password</label>
+                {# Styled input #}
+                <input name="password" type="password" placeholder="Enter password"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-navy-500">
+            </div>
+
+            {# Styled submit button #}
+            <button type="submit"
+                    class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
+                Register
+            </button>
+        </form>
+    </div>
+</body>
+</html>

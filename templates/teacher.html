@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Teacher Panel - College Notes Sharing Portal</title>
+    {# Include Tailwind CSS #}
+    <script src="https://cdn.tailwindcss.com"></script>
+    {# Link to Poppins font #}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    {# Link to Font Awesome for icons #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBgzWkkmhxwOBGgFAWVLwVYlrwksG/g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background:linear-gradient(to bottom right, #eef2ff, #e0e7ff);
+            margin: 0;
+            /* Tailwind handles min-height, flex, justify-center, items-center, px-4 */
+        }
+
+        /* --- Components --- */
+        .logout-button {
+            /* Positioning handled by Tailwind classes: fixed top-5 right-5 */
+            /* Appearance handled by Tailwind classes: bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md */
+            background-color: #dc3545; /* Use variable or direct color */
+            color: white;
+            font-weight: 600;
+            padding: 10px 15px; /* Adjusted padding */
+            border-radius: 12px; /* Adjusted border-radius */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adjusted shadow */
+            z-index: 50;
+            transition: background-color 0.3s ease;
+            text-decoration: none; /* Remove underline */
+            display: inline-flex; /* Align icon and text */
+            align-items: center;
+        }
+        .logout-button:hover {
+            background-color: #c82333; /* Darker red on hover */
+        }
+        .logout-button i {
+            margin-right: 8px; /* Consistent spacing for icon */
+        }
+
+        /* Styling for the main content container */
+        .main-content-card {
+             background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+             box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15); /* Medium shadow */
+             border-radius: 12px; /* Rounded corners */
+             padding: 24px; /* Consistent padding */
+             max-width: 960px; /* Adjusted max-width */
+             width: 100%; /* Take full width up to max-width */
+             margin: auto; /* Center the block element */
+        }
+
+
+        /* Styling the main heading */
+        .main-heading {
+            text-align: center;
+            color: #5a67d8; /* Primary color */
+            font-weight: 700;
+            /* Font size adjusted here */
+            font-size: 3.0rem; /* Smaller font size */
+            margin-bottom: 24px; /* Consistent spacing */
+        }
+
+        /* Styling the introductory paragraph */
+        .intro-paragraph {
+            text-align: center;
+            color: #4a5568; /* Light text color */
+            margin-bottom: 40px; /* Consistent spacing */
+            font-size: 1.1em;
+        }
+
+        /* Styling for the individual feature cards */
+        .feature-card {
+            display: flex;
+            align-items: flex-start; /* Align items to the top */
+            gap: 24px; /* Consistent gap between icon and content */
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid transparent; /* Add transparent border */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px); /* Consistent hover effect */
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+        }
+
+        /* Specific background and border colors for each card */
+        .feature-card.section-card {
+            background-color: #e0e7ff; /* Light blueish-purple */
+            border-color: #c5cbe9;
+        }
+
+        .feature-card.enroll-card {
+            background-color: #e0f7fa; /* Light blueish */
+            border-color: #b2ebf2;
+        }
+
+        .feature-card.register-card {
+            background-color: #fff3e0; /* Light orange */
+            border-color: #ffcc80;
+        }
+
+        .feature-card.show-sections-card {
+            background-color: #e8eaf6; /* Light purplish */
+            border-color: #c5cbe9;
+        }
+
+         .feature-card.show-students-card {
+             background-color: #ffebee; /* Light red */
+             border-color: #ffcdd2;
+         }
+
+
+        .feature-card i { /* Styling the main icon */
+            font-size: 1.8em; /* Larger icon size */
+            flex-shrink: 0; /* Prevent icon from shrinking */
+        }
+
+        /* Icon colors for each card type */
+        .section-card i { color: #5a67d8; } /* Primary color */
+        .enroll-card i { color: #00a88a; } /* Green */
+        .register-card i { color: #ff9800; } /* Orange */
+        .show-sections-card i { color: #4c51bf; } /* Darker primary */
+        .show-students-card i { color: #dc3545; } /* Red */
+
+
+        .feature-card h3 { /* Styling the card title */
+            font-size: 1.25em;
+            font-weight: 600;
+            margin-bottom: 8px; /* Consistent spacing */
+            color: #2d3748; /* Dark text color */
+        }
+
+        /* Card title colors for each card type (optional, using dark text color for consistency) */
+        .section-card h3 { color: #4338ca; } /* Darker primary */
+        .enroll-card h3 { color: #16a34a; } /* Darker green */
+        .register-card h3 { color: #f57c00; } /* Darker orange */
+        .show-sections-card h3 { color: #3730a3; } /* Even darker primary */
+         .show-students-card h3 { color: #c82333; } /* Darker red */
+
+
+        .feature-card p { /* Styling the card description */
+            font-size: 0.95em;
+            color: #4a5568; /* Light text color */
+            margin-bottom: 16px; /* Consistent spacing */
+            text-align: left; /* Align description left */
+        }
+
+        .feature-card a { /* Styling the link */
+            display: inline-block;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease-in-out;
+            font-size: 0.9em; /* Slightly smaller link text */
+        }
+
+        /* Link colors for each card type */
+        .section-card a { color: #5a67d8; } /* Primary color */
+        .section-card a:hover { color: #4c51bf; }
+        .enroll-card a { color: #00b894; } /* Green */
+        .enroll-card a:hover { color: #00a88a; }
+        .register-card a { color: #ff9800; } /* Orange */
+        .register-card a:hover { color: #f57c00; }
+        .show-sections-card a { color: #5a67d8; } /* Primary color */
+        .show-sections-card a:hover { color: #4c51bf; }
+         .show-students-card a { color: #dc3545; } /* Red */
+         .show-students-card a:hover { color: #c82333; }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-heading {
+                font-size: 2.2rem; /* Adjusted for medium screens */
+            }
+            .intro-paragraph {
+                font-size: 1em;
+            }
+            .feature-card {
+                flex-direction: column; /* Stack icon and content vertically */
+                align-items: center; /* Center items when stacked */
+                text-align: center; /* Center text when stacked */
+                gap: 16px; /* Adjusted gap */
+            }
+             .feature-card i {
+                 margin-bottom: 8px; /* Add space below icon when stacked */
+             }
+            .feature-card h3,
+            .feature-card p {
+                text-align: center; /* Ensure text is centered when stacked */
+            }
+            .feature-card h3 {
+                font-size: 1.1em; /* Reduced title size */
+            }
+            .feature-card p {
+                font-size: 0.9em; /* Reduced description size */
+            }
+            .feature-card a {
+                font-size: 0.85em; /* Reduced link size */
+            }
+             .logout-button { /* Adjust fixed button position */
+                 padding: 8px 12px;
+                 font-size: 0.9em;
+                 top: 10px;
+                 right: 10px;
+             }
+              .logout-button i {
+                  margin-right: 6px;
+              }
+        }
+
+         @media (max-width: 480px) {
+             .main-heading {
+                 font-size: 1.7rem; /* Adjusted for small screens */
+             }
+             .intro-paragraph {
+                 font-size: 0.95em;
+             }
+             .feature-card {
+                 padding: 16px; /* Reduced padding */
+                 gap: 8px; /* Reduced gap */
+             }
+             .feature-card i {
+                 font-size: 1.5em; /* Adjusted icon size */
+                 margin-bottom: 4px; /* Adjusted space below icon */
+             }
+             .feature-card h3 {
+                 font-size: 1em;
+             }
+             .feature-card p {
+                 font-size: 0.85em;
+             }
+             .feature-card a {
+                 font-size: 0.8em;
+             }
+             .logout-button { /* Adjust fixed button position */
+                 padding: 6px 10px;
+                 font-size: 0.85em;
+                 top: 8px;
+                 right: 8px;
+             }
+              .logout-button i {
+                  margin-right: 4px;
+              }
+         }
+    </style>
+</head>
+<body class="min-h-screen flex justify-center items-center px-4">
+    {# Logout button - positioned fixed at top right #}
+    <a href="{{ url_for('logout') }}" class="logout-button fixed top-5 right-5">
+        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+    </a>
+
+    {# Main content container #}
+    <div class="main-content-card">
+        {# Teacher Panel Heading #}
+        <h1 class="main-heading">Teacher Panel</h1>
+
+        {# Introductory Paragraph #}
+        <p class="intro-paragraph">
+            As a teacher, you can manage your courses and interact with students on the College Notes Sharing Portal. Here's a glimpse of what you can do:
+        </p>
+
+        <div class="space-y-6">
+            <div class="feature-card section-card">
+                {# Main icon #}
+                <i class="fas fa-layer-group"></i>
+                <div class="flex-1"> {# Use flex-1 to allow content to grow #}
+                    <h3 class="text-[#4338ca] font-bold text-xl mb-1">⚙️ Create Sections</h3>
+                    <p class="text-[#4a5568] text-sm md:text-base">Create, modify, and organize academic sections (e.g., semesters, departments, subjects) to structure the notes effectively.</p>
+                    <a href="{{ url_for('create_section') }}" class="text-[#5a67d8] hover:underline inline-block mt-2">Go to Create Sections</a>
+                </div>
+            </div>
+
+            <div class="feature-card enroll-card">
+                 {# Main icon #}
+                <i class="fas fa-user-plus"></i>
+                <div class="flex-1"> {# Use flex-1 to allow content to grow #}
+                    <h3 class="text-[#16a34a] font-bold text-xl mb-1">➕ Enroll in a Group</h3>
+                    <p class="text-[#4a5568] text-sm md:text-base">Go through a list of all available sections and enroll yourself as a teacher to share related subject contents.</p>
+                    <a href="{{ url_for('add_branches') }}" class="text-[#00b894] hover:underline inline-block mt-2">Go to Enroll in a Group</a>
+                </div>
+            </div>
+
+            <div class="feature-card register-card">
+                 {# Main icon #}
+                <i class="fas fa-folder-open"></i>
+                <div class="flex-1"> {# Use flex-1 to allow content to grow #}
+                    <h3 class="text-[#f57c00] font-bold text-xl mb-1">📝 Register Students</h3>
+                    <p class="text-[#4a5568] text-sm md:text-base">Review and manage all student registrations to ensure their proper enrollment in courses and access to study materials.</p>
+                    <a href="{{ url_for('student_register') }}" class="text-[#ff9800] hover:underline inline-block mt-2">Go to Register Students</a>
+                </div>
+            </div>
+
+            <div class="feature-card show-sections-card">
+                 {# Main icon #}
+                <i class="fas fa-chalkboard-user"></i>
+                <div class="flex-1"> {# Use flex-1 to allow content to grow #}
+                    <h3 class="text-[#3730a3] font-bold text-xl mb-1">⭐ Show Sections</h3>
+                    <p class="text-[#4a5568] text-sm md:text-base">Get a comprehensive list of all academic sections and the teachers associated with them.</p>
+                    <a href="{{ url_for('show_sections') }}" class="text-[#5a67d8] hover:underline inline-block mt-2">Go to Show Sections</a>
+                </div>
+            </div>
+
+            <div class="feature-card show-students-card">
+                 {# Main icon #}
+                <i class="fas fa-graduation-cap"></i>
+                <div class="flex-1"> {# Use flex-1 to allow content to grow #}
+                    <h3 class="text-[#c82333] font-bold text-xl mb-1">📊 Show All Students</h3>
+                    <p class="text-[#4a5568] text-sm md:text-base">Access a complete directory of all students registered on the portal.</p>
+                    <a href="{{ url_for('show_students') }}" class="text-[#dc3545] hover:underline inline-block mt-2">Go to Show All Students</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

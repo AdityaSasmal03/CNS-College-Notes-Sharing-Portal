@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Details</title>
+    <style>
+        /* --- Variables --- */
+        :root {
+            --primary-color: #5a67d8; /* A modern purple/blue */
+            --primary-color-dark: #4c51bf;
+            --background-color: #f7fafc; /* Light clean background */
+            --card-background: #ffffff; /* White */
+            --text-color-dark: #2d3748; /* Darker text for better contrast */
+            --text-color-light: #4a5568;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+
+             /* Specific colors for this page */
+             --header-bg: #e0e7ff; /* Light blueish-purple */
+             --header-border: #c5cbe9;
+             --group-title-bg: var(--primary-color); /* Primary color for title background */
+             --group-title-color: white; /* White text for title */
+             --back-button-color: #dc3545; /* Red for close/back */
+             --back-button-color-hover: #c82333;
+             --popup-bg: var(--card-background);
+             --popup-border: #eee;
+             --popup-close-bg: #28a745; /* Green for close button */
+             --popup-close-bg-hover: #218838;
+             --list-item-bg: #f7fafc; /* Light background for list items */
+             --list-item-border: #e2e8f0;
+             --subject-button-bg: var(--primary-color);
+             --subject-button-bg-hover: var(--primary-color-dark);
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif; /* Use Poppins */
+            background: linear-gradient(to bottom right, var(--background-color), #e2e8f0); /* Consistent subtle gradient */
+            margin: 0;
+            padding: var(--spacing-md); /* Consistent padding */
+            color: var(--text-color-light);
+            line-height: 1.6;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color-dark);
+            font-weight: 700;
+            margin-top: 0;
+        }
+
+        h2 { /* Styling the main titles within the popup */
+            font-size: 1.8rem;
+            margin-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: var(--spacing-xs);
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        h3 { /* Styling section titles */
+             font-size: 1.5em;
+             color: var(--text-color-dark);
+             font-weight: 600;
+             margin-bottom: var(--spacing-md);
+             border-bottom: 1px solid #eee;
+             padding-bottom: var(--spacing-xs);
+        }
+
+
+        /* --- Layout --- */
+        .container {
+            width: 100%;
+            max-width: 600px; /* Keep original max-width */
+            margin: var(--spacing-md) auto; /* Consistent margin */
+            background-color: var(--card-background); /* White background */
+            padding: var(--spacing-md); /* Consistent padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            box-shadow: var(--shadow-medium); /* Consistent shadow */
+            position: relative;
+        }
+
+        /* --- Components --- */
+        .header {
+            background-color: var(--header-bg); /* Light blueish-purple */
+            padding: var(--spacing-sm) var(--spacing-md); /* Consistent padding */
+            border-bottom: 1px solid var(--header-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Space out title and button */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            margin-bottom: var(--spacing-md); /* Space below header */
+             box-shadow: var(--shadow-light);
+        }
+
+        .back-button { /* Styling the back button */
+            background: none;
+            border: none;
+            color: var(--back-button-color); /* Red color */
+            font-size: 1.5em; /* Larger icon size */
+            cursor: pointer;
+            margin-right: 0; /* Remove margin right */
+            padding: var(--spacing-xs); /* Add padding for click area */
+            transition: color 0.2s ease-in-out;
+        }
+
+        .back-button:hover {
+            color: var(--back-button-color-hover); /* Darker red on hover */
+        }
+
+        .back-button a { /* Ensure the link inside button has no underline */
+             text-decoration: none;
+             color: inherit; /* Inherit color from button */
+             font-weight: normal; /* Remove bold from link */
+        }
+
+
+        .group-title-nav { /* Styling the group title in header */
+            color: var(--group-title-color); /* White text */
+            font-weight: 700; /* Bolder */
+            font-size: 1.5em; /* Larger font size */
+            cursor: pointer;
+            padding: var(--spacing-xs) var(--spacing-sm); /* Consistent padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            background-color: var(--group-title-bg); /* Primary color */
+             box-shadow: var(--shadow-light);
+             transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+         .group-title-nav:hover {
+             background-color: var(--primary-color-dark);
+             box-shadow: var(--shadow-medium);
+         }
+
+
+        /* Popup (Modal) Styling */
+        .popup {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 100; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.6); /* Black background with opacity */
+            backdrop-filter: blur(5px); /* Blur effect */
+            display: flex; /* Use flexbox for centering */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content { /* Styling the content inside the popup */
+            background-color: var(--popup-bg); /* White background */
+            margin: auto; /* Auto margin for centering */
+            padding: var(--spacing-md); /* Consistent padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            border: 1px solid var(--popup-border);
+            width: 90%; /* Adjusted width */
+            max-width: 400px; /* Maximum width */
+            box-shadow: var(--shadow-medium);
+            position: relative;
+        }
+
+        .popup h2 { /* Styling title inside popup */
+             font-size: 1.6rem;
+             margin-bottom: var(--spacing-md);
+             border-bottom: 2px solid var(--primary-color);
+             padding-bottom: var(--spacing-xs);
+             text-align: center;
+             color: var(--text-color-dark);
+        }
+
+        .popup p { /* Styling paragraphs inside popup */
+            margin-bottom: var(--spacing-xs); /* Consistent spacing */
+            color: var(--text-color-dark); /* Dark text */
+            font-size: 0.95em;
+        }
+
+        .popup p strong { /* Styling strong text inside popup paragraphs */
+             color: var(--primary-color); /* Primary color for strong text */
+             font-weight: 600;
+        }
+
+         .popup h3 { /* Styling h3 inside popup */
+             font-size: 1.3em;
+             margin-top: var(--spacing-md);
+             margin-bottom: var(--spacing-sm);
+             border-bottom: 1px solid #eee;
+             padding-bottom: var(--spacing-xs);
+             color: var(--text-color-dark);
+         }
+
+        .popup-close-button { /* Styling the close button inside popup */
+            background-color: var(--popup-close-bg); /* Green color */
+            color: white;
+            border: none;
+            padding: 10px 20px; /* Adjusted padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            cursor: pointer;
+            margin-top: var(--spacing-md); /* Consistent spacing */
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            font-weight: 600;
+            display: block; /* Make button a block for full width */
+            width: 100%;
+            box-shadow: var(--shadow-light);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .popup-close-button:hover {
+            background-color: var(--popup-close-bg-hover); /* Darker green on hover */
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* General Link Styling (applied to 'a' tags not within specific classes) */
+        a {
+            text-decoration: none;
+            font-weight: 600; /* Adjusted font weight */
+            color: var(--primary-color); /* Use primary color */
+            transition: color 0.2s ease-in-out;
+        }
+
+        a:hover {
+             color: var(--primary-color-dark); /* Darker primary on hover */
+        }
+
+        /* Styling for the static cards (Teachers list) */
+        .static-cards {
+            margin-top: var(--spacing-lg); /* Consistent spacing */
+        }
+
+         .static-cards h3 { /* Styling title in static cards */
+             font-size: 1.5em;
+             margin-bottom: var(--spacing-md);
+             border-bottom: 1px solid #eee;
+             padding-bottom: var(--spacing-xs);
+             color: var(--text-color-dark);
+         }
+
+        .static-cards div { /* Styling the div wrapping teacher name */
+            background-color: var(--list-item-bg); /* Light background */
+            color: var(--text-color-dark); /* Dark text */
+            padding: var(--spacing-sm) var(--spacing-md); /* Consistent padding */
+            margin-top: var(--spacing-sm); /* Consistent spacing */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            border: 1px solid var(--list-item-border);
+            box-shadow: var(--shadow-light);
+        }
+
+        .static-cards div:first-child {
+            margin-top: 0;
+        }
+
+        .static-cards p { /* Styling the teacher name paragraph */
+            margin-top: 0;
+            margin-bottom: 0;
+            font-size: 1em;
+            color: var(--text-color-dark);
+            font-weight: 600;
+        }
+
+
+        /* Styling for the content list (Documents/Files) */
+        .content-list {
+            margin-top: var(--spacing-lg); /* Consistent spacing */
+             /* Removed explicit max-width and margin auto to fit within container */
+             background: var(--card-background); /* White background */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             box-shadow: var(--shadow-light); /* Consistent shadow */
+             padding: var(--spacing-md); /* Consistent padding */
+             border: 1px solid #eee; /* Light border */
+        }
+
+         .content-list h3 { /* Styling title in content list */
+             font-size: 1.5em;
+             margin-bottom: var(--spacing-md);
+             border-bottom: 2px solid var(--primary-color); /* Primary color border */
+             padding-bottom: var(--spacing-xs);
+             color: var(--text-color-dark);
+         }
+
+        .content-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .content-list li {
+            background-color: var(--list-item-bg); /* Light background */
+            border: 1px solid var(--list-item-border);
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            margin-bottom: var(--spacing-sm); /* Consistent spacing */
+            padding: var(--spacing-sm) var(--spacing-md); /* Consistent padding */
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+             box-shadow: var(--shadow-light);
+             word-break: break-word; /* Added word break */
+        }
+
+         .content-list li:hover {
+              background-color: #eef2f7; /* Slightly darker light background on hover */
+              box-shadow: var(--shadow-medium);
+         }
+
+        .content-list li a {
+            color: var(--text-color-dark); /* Dark text for link */
+            text-decoration: none;
+            display: block;
+            font-weight: normal; /* Remove bold from link */
+        }
+
+         .content-list li a:hover {
+             color: var(--primary-color); /* Primary color on link hover */
+         }
+
+
+        .content-list li span {
+            font-weight: 600; /* Bolder */
+            color: var(--primary-color); /* Primary color for file name */
+            margin-right: var(--spacing-sm); /* Consistent spacing */
+            display: inline; /* Keep span inline */
+        }
+
+         .content-list li p { /* Styling "Uploaded by" paragraph */
+             margin-top: var(--spacing-xs);
+             margin-bottom: var(--spacing-xs);
+             font-size: 0.9em;
+             color: var(--text-color-light);
+             text-align: left; /* Align left */
+         }
+
+
+        /* Styling for the subject list */
+        .subject-list {
+            margin-top: var(--spacing-lg); /* Consistent spacing */
+        }
+
+        .subject-list h3 { /* Styling title in subject list */
+            color: var(--text-color-dark); /* Dark text color */
+            margin-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--primary-color); /* Primary color border */
+            padding-bottom: var(--spacing-xs);
+        }
+
+        .subject-list ul {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Keep original minmax */
+            gap: var(--spacing-md); /* Consistent gap */
+        }
+
+        .subject-list li {
+            background-color: var(--card-background); /* White background */
+            border: 1px solid #eee;
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            box-shadow: var(--shadow-light); /* Consistent shadow */
+            padding: var(--spacing-md); /* Consistent padding */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Push button to bottom */
+            word-break: break-word; /* Added word break */
+        }
+
+        .subject-list li:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .subject-list li span {
+            font-weight: 700; /* Bolder */
+            color: var(--primary-color); /* Primary color for subject name */
+            display: block;
+            margin-bottom: var(--spacing-xs); /* Consistent spacing */
+            font-size: 1.2em; /* Larger font size */
+        }
+
+        .subject-list li span:nth-child(2) { /* Styling for "by Teacher Name" span */
+             font-size: 0.9em;
+             color: var(--text-color-light); /* Light text color */
+             font-weight: 400; /* Normal weight */
+             margin-bottom: var(--spacing-sm); /* More space below */
+         }
+
+         .subject-list li span p { /* Styling paragraph inside the third span */
+             font-size: 0.9em;
+             color: var(--text-color-light);
+             margin-top: 0;
+             margin-bottom: 0;
+             font-style: italic; /* Italicize hint text */
+             text-align: left; /* Align left */
+         }
+
+
+        .subject-button { /* Styling the view details button */
+            background-color: var(--subject-button-bg); /* Primary color */
+            color: white;
+            border: none;
+            padding: 10px 20px; /* Adjusted padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            cursor: pointer;
+            margin-top: var(--spacing-md); /* Consistent spacing */
+            font-size: 1em;
+            font-weight: 600;
+            align-self: center; /* Center the button */
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: var(--shadow-light);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .subject-button:hover {
+            background-color: var(--subject-button-bg-hover); /* Darker primary on hover */
+            box-shadow: var(--shadow-medium);
+        }
+
+        .hidden-form {
+            display: none;
+        }
+
+        /* Styling for the empty state paragraph */
+        p {
+            text-align: center;
+            color: var(--text-color-light);
+            font-style: italic;
+            margin-top: var(--spacing-md);
+        }
+
+
+        /* --- Responsive Styles --- */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-sm);
+            }
+            .container {
+                padding: var(--spacing-sm);
+                margin: var(--spacing-sm) auto;
+            }
+            h2 {
+                font-size: 1.6rem;
+                padding-bottom: var(--spacing-xs);
+                 margin-bottom: var(--spacing-md);
+            }
+             h3 {
+                 font-size: 1.3em;
+                 margin-bottom: var(--spacing-sm);
+                 padding-bottom: 6px;
+             }
+            .header {
+                 padding: var(--spacing-xs) var(--spacing-sm);
+                 margin-bottom: var(--spacing-md);
+            }
+            .back-button {
+                 font-size: 1.3em;
+                 padding: var(--spacing-xs);
+            }
+             .group-title-nav {
+                 font-size: 1.3em;
+                 padding: var(--spacing-xs);
+             }
+             .popup-content {
+                 width: 95%;
+                 padding: var(--spacing-md);
+             }
+             .popup h2 {
+                 font-size: 1.4rem;
+             }
+             .popup p {
+                 font-size: 0.9em;
+                 margin-bottom: var(--spacing-xs);
+             }
+              .popup h3 {
+                 font-size: 1.1em;
+                 margin-top: var(--spacing-md);
+                 margin-bottom: var(--spacing-sm);
+             }
+             .popup-close-button {
+                 padding: 8px 15px;
+                 font-size: 0.9em;
+                 margin-top: var(--spacing-md);
+             }
+
+             .static-cards {
+                 margin-top: var(--spacing-md);
+             }
+              .static-cards h3 {
+                 font-size: 1.3em;
+                 margin-bottom: var(--spacing-sm);
+             }
+              .static-cards div {
+                 padding: var(--spacing-xs) var(--spacing-sm);
+                 margin-top: var(--spacing-xs);
+             }
+             .static-cards p {
+                 font-size: 0.95em;
+             }
+
+             .content-list {
+                 margin-top: var(--spacing-md);
+                 padding: var(--spacing-sm);
+             }
+              .content-list h3 {
+                 font-size: 1.3em;
+                 margin-bottom: var(--spacing-sm);
+             }
+              .content-list li {
+                 padding: var(--spacing-xs) var(--spacing-sm);
+                 margin-bottom: var(--spacing-xs);
+             }
+              .content-list li span {
+                 font-size: 0.95em;
+                 margin-right: var(--spacing-xs);
+             }
+              .content-list li p {
+                 font-size: 0.85em;
+                 margin-top: var(--spacing-xs);
+                 margin-bottom: var(--spacing-xs);
+             }
+
+
+             .subject-list {
+                 margin-top: var(--spacing-md);
+             }
+              .subject-list h3 {
+                 font-size: 1.3em;
+                 margin-bottom: var(--spacing-sm);
+             }
+              .subject-list ul {
+                 gap: var(--spacing-sm);
+             }
+              .subject-list li {
+                 padding: var(--spacing-sm);
+             }
+              .subject-list li span {
+                 font-size: 1.1em;
+                 margin-bottom: var(--spacing-xs);
+             }
+              .subject-list li span:nth-child(2) {
+                 font-size: 0.85em;
+                 margin-bottom: var(--spacing-sm);
+             }
+              .subject-list li span p {
+                 font-size: 0.85em;
+             }
+              .subject-button {
+                 padding: 8px 15px;
+                 font-size: 0.9em;
+                 margin-top: var(--spacing-md);
+             }
+        }
+
+         @media (max-width: 480px) {
+             body {
+                 padding: var(--spacing-xs);
+             }
+             .container {
+                 padding: var(--spacing-xs);
+                 margin: var(--spacing-xs) auto;
+             }
+             h2 {
+                 font-size: 1.4rem;
+             }
+              h3 {
+                 font-size: 1.2em;
+             }
+             .header {
+                 padding: var(--spacing-xs);
+                 margin-bottom: var(--spacing-md);
+             }
+              .back-button {
+                 font-size: 1.1em;
+             }
+              .group-title-nav {
+                 font-size: 1.1em;
+                 padding: var(--spacing-xs);
+             }
+             .popup-content {
+                 padding: var(--spacing-sm);
+             }
+              .popup h2 {
+                 font-size: 1.2rem;
+             }
+              .popup p {
+                 font-size: 0.85em;
+             }
+              .popup h3 {
+                 font-size: 1em;
+                 margin-top: var(--spacing-md);
+                 margin-bottom: var(--spacing-sm);
+             }
+              .popup-close-button {
+                 padding: 6px 12px;
+                 font-size: 0.8em;
+             }
+
+             .static-cards {
+                 margin-top: var(--spacing-md);
+             }
+              .static-cards h3 {
+                 font-size: 1.1em;
+                 margin-bottom: var(--spacing-sm);
+             }
+              .static-cards div {
+                 padding: var(--spacing-xs);
+                 margin-top: var(--spacing-xs);
+             }
+             .static-cards p {
+                 font-size: 0.9em;
+             }
+
+             .content-list {
+                 margin-top: var(--spacing-md);
+                 padding: var(--spacing-sm);
+             }
+              .content-list h3 {
+                 font-size: 1.1em;
+                 margin-bottom: var(--spacing-sm);
+             }
+              .content-list li {
+                 padding: var(--spacing-xs);
+                 margin-bottom: var(--spacing-xs);
+             }
+              .content-list li span {
+                 font-size: 0.9em;
+             }
+              .content-list li p {
+                 font-size: 0.8em;
+             }
+
+
+             .subject-list {
+                 margin-top: var(--spacing-md);
+             }
+              .subject-list h3 {
+                 font-size: 1.1em;
+                 margin-bottom: var(--spacing-sm);
+             }
+              .subject-list ul {
+                 gap: var(--spacing-sm);
+             }
+              .subject-list li {
+                 padding: var(--spacing-sm);
+             }
+              .subject-list li span {
+                 font-size: 1em;
+                 margin-bottom: var(--spacing-xs);
+             }
+              .subject-list li span:nth-child(2) {
+                 font-size: 0.8em;
+                 margin-bottom: var(--spacing-sm);
+             }
+              .subject-list li span p {
+                 font-size: 0.8em;
+             }
+              .subject-button {
+                 padding: 6px 12px;
+                 font-size: 0.85em;
+                 margin-top: var(--spacing-md);
+             }
+         }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="group-title-nav" onclick="openPopup()">{{ group_name|upper }}</div>
+            <button class="back-button"><a href="{{ url_for('back_student_again') }}">❌</a></button>
+        </div>
+
+        <div id="groupInfoPopup" class="popup">
+            <div class="popup-content">
+                <h2>{{ group_name|capitalize }}</h2>
+                <p><strong>Type:</strong> {{ type }}</p>
+                {% if group_branch %}
+                <p><strong>Branch:</strong> {{ group_branch }}</p>
+                {% endif %}
+                {% if group_semester %}
+                <p><strong>Semester:</strong> {{ group_semester }}</p>
+                {% endif %}
+                <p><strong>Created By:</strong> {{ created_by }}</p>
+                <p><strong>Can Access:</strong> {{ can_access }}</p>
+                {% if members %}
+                <h3>Members:</h3>
+                <ul>
+                    {% for member in members %}
+                    <li>{{ member }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% if teachers %}
+                <h3>Teachers:</h3>
+                <ul>
+                    {% for teacher in teachers %}
+                    <li>{{ teacher.Teachername if teacher.Teachername else teacher }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                {% if subjects %}
+                <h3>Teachers:</h3>
+                <ul>
+                    {% set displayed_teachers = [] %}
+                    {% for subject in subjects %}
+                    <li>
+                        {% if subject.teacher_name not in displayed_teachers %}
+                        <span>{{ subject.teacher_name }}</span>
+                        {% set displayed_teachers = displayed_teachers.append(subject.teacher_name) %}
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                <button class="popup-close-button" onclick="closePopup()">Close</button>
+            </div>
+        </div>
+
+        {% if type == "common" and content_names %}
+<div class="content-list" style="max-width: 800px; margin: 0 auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); padding: 25px 30px; font-family: 'Segoe UI', sans-serif;">
+    <h3 style="color: #004e89; margin-bottom: 20px; font-size: 24px; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">Group Content</h3>
+    <ul style="list-style: none; padding: 0;">
+        {% for i in range(content_names|length) %}
+        <li style="background: #f0f8ff; border: 1px solid #cce4ff; border-radius: 10px; margin-bottom: 15px; padding: 15px 20px; transition: background 0.3s;">
+            <a href="{{ content_names[i]['link'] }}" target="_blank" style="text-decoration: none; color: #003366; display: block;" class="aHover">
+                <span style="display: block; margin-top: 3px;">{{ content_names[i]["file_name"] }}</span>
+                <p>Uploaded by:</p> <span style="display: block; margin-top: 3px;">{{ content_names[i]["by"] }}</span>
+                <button  class="subject-button" type="button">View Document</button>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+        {% elif type != "common" and teachers %}
+        <div class="static-cards">
+            <h3>Teachers:</h3>
+            {% for teacher in teachers %}
+            <div>
+                <p>{{ teacher }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if subjects %}
+        <div class="subject-list">
+            <h3>Subjects:</h3>
+            <ul>
+                {% for subject in subjects %}
+                <li>
+                    <span>{{ subject.subject }}</span>
+                    <span style="font-size: 0.9em;">by {{ subject.teacher_name }}</span>
+                    <span style="font-size: 0.9em;"><p>Uploads by {{ subject.teacher_name }} and {{ cr_data.name }}</p></span>
+                    <form action="{{ url_for('show_selected_subject') }}" method="POST" class="hidden-form">
+                        <input type="hidden" name="subject_name" value="{{ group_name }}">
+                        <input type="hidden" name="subject_branch" value="{{ group_branch }}">
+                        <input type="hidden" name="subject_semester" value="{{ group_semester }}">
+                        <input type="hidden" name="subject_subject" value="{{ subject.subject }}">
+                        <input type="hidden" name="cr_name" value="{{ cr_data.name }}">
+                        <input type="hidden" name="cr_id" value="{{ cr_id }}">
+                        <input type="hidden" name="teacher_name" value="{{ subject.teacher_name }}">
+                        <button type="submit" class="subject-button">View Details</button>
+                    </form>
+                    <button type="button" class="subject-button" onclick="this.previousElementSibling.submit()">View Details</button>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if not teachers and not content_names and not subjects %}
+        <p>No content or subjects available for this group yet.</p>
+        {% endif %}
+
+        {% if teachers and not content_names and not subjects %}
+        <p>No contents available for this group yet.</p>
+        {% endif %}
+
+    </div>
+
+    <script>
+        const modal = document.getElementById("groupInfoPopup");
+
+        function openPopup() {
+            modal.style.display = "flex"; // Use flex to center
+        }
+
+        function closePopup() {
+            modal.style.display = "none";
+        }
+
+        window.addEventListener('click', function(event) {
+            if (event.target == modal) {
+                closePopup();
+            }
+        });
+    </script>
+</body>
+</html>

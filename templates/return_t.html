@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Response</title>
+    {# Link to Poppins font #}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    {# Link to Font Awesome for icons if needed later #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBgzWkkmhxwOBGgFAWVLwVYlrwksG/g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* --- Variables --- */
+        :root {
+            --primary-color: #5a67d8; /* Our modern navy blue */
+            --primary-color-dark: #4c51bf;
+            --background-color: #f7fafc; /* Light clean background */
+            --card-background: #ffffff; /* White */
+            --text-color-dark: #2d3748; /* Darker text for better contrast */
+            --text-color-light: #4a5568;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+
+             /* Flash message colors */
+             --flash-success-bg: #d4edda;
+             --flash-success-color: #155724;
+             --flash-success-border: #c3e6cb;
+
+             --flash-error-bg: #f8d7da;
+             --flash-error-color: #721c24;
+             --flash-error-border: #f5c6cb;
+
+             --flash-warning-bg: #fff3cd;
+             --flash-warning-color: #85640a;
+             --flash-warning-border: #ffeeba;
+
+             --flash-info-bg: #e2e7f2;
+             --flash-info-color: #385898;
+             --flash-info-border: #d1dbe9;
+
+             /* Button colors */
+             --button-primary-bg: var(--primary-color);
+             --button-primary-bg-hover: var(--primary-color-dark);
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif; /* Use Poppins for consistency */
+            background: linear-gradient(to bottom right, var(--background-color), #e2e8f0); /* Consistent subtle gradient */
+            margin: 0;
+            padding: var(--spacing-md); /* Consistent padding */
+            color: var(--text-color-light); /* Default text color using variable */
+            line-height: 1.6;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color-dark); /* Ensure headings use the dark text color variable */
+            font-weight: 700; /* Consistent bold weight for headings */
+            margin-top: 0;
+        }
+
+        p {
+             color: var(--text-color-light); /* Ensure paragraphs use the light text color variable */
+        }
+
+        /* --- Layout --- */
+        .container {
+            width: 100%;
+            max-width: 600px; /* Adjusted max-width for a better fit with other pages */
+            margin: var(--spacing-md) auto; /* Consistent margin */
+            background-color: var(--card-background); /* White background */
+            padding: var(--spacing-md); /* Consistent padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            box-shadow: var(--shadow-medium); /* Consistent shadow */
+            position: relative;
+            border: 1px solid #eee; /* Add a light border */
+        }
+
+        /* --- Components --- */
+
+        /* Style for the main title */
+        h1 {
+            font-size: 2.5em; /* Keep original font size */
+            font-weight: 700; /* Consistent bold weight */
+            color: var(--text-color-dark); /* Use dark text color variable */
+            margin-bottom: var(--spacing-md); /* Consistent spacing */
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color); /* Add primary color underline */
+            padding-bottom: var(--spacing-xs); /* Add padding below underline */
+        }
+
+        /* Style for the flash message container */
+        .flash-messages {
+            margin-bottom: var(--spacing-md); /* Consistent spacing */
+        }
+
+        /* Style for individual flash messages */
+        .flash-message {
+            padding: var(--spacing-sm) var(--spacing-md); /* Consistent padding */
+            margin-bottom: var(--spacing-sm); /* Consistent spacing */
+            border: 1px solid;
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            font-weight: 600; /* Bolder text */
+            box-shadow: var(--shadow-light); /* Add a light shadow */
+        }
+
+        /* Specific styles for flash message categories */
+        .flash-message.success {
+            background-color: var(--flash-success-bg);
+            color: var(--flash-success-color);
+            border-color: var(--flash-success-border);
+        }
+        .flash-message.error {
+            background-color: var(--flash-error-bg);
+            color: var(--flash-error-color);
+            border-color: var(--flash-error-border);
+        }
+        .flash-message.warning {
+            background-color: var(--flash-warning-bg);
+            color: var(--flash-warning-color);
+            border-color: var(--flash-warning-border);
+        }
+        .flash-message.info {
+            background-color: var(--flash-info-bg);
+            color: var(--flash-info-color);
+            border-color: var(--flash-info-border);
+        }
+
+        /* Style for the back link button */
+        .back-link {
+            display: inline-block;
+            padding: 10px 20px; /* Keep original padding */
+            background-color: var(--button-primary-bg); /* Use primary color variable */
+            color: white;
+            text-decoration: none;
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            margin-top: var(--spacing-md); /* Consistent spacing */
+            font-size: 1em;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Consistent transition */
+            font-weight: 600; /* Consistent bold weight */
+            box-shadow: var(--shadow-light); /* Add a light shadow */
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .back-link:hover {
+            background-color: var(--button-primary-bg-hover); /* Darker primary on hover */
+            box-shadow: var(--shadow-medium); /* Consistent shadow on hover */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-sm);
+            }
+            .container {
+                padding: var(--spacing-sm);
+                margin: var(--spacing-sm) auto;
+            }
+            h1 {
+                font-size: 2em;
+                margin-bottom: var(--spacing-md);
+                padding-bottom: var(--spacing-xs);
+            }
+             .flash-message {
+                 padding: var(--spacing-xs) var(--spacing-sm);
+                 margin-bottom: var(--spacing-xs);
+                 font-size: 0.9em;
+             }
+             .back-link {
+                 padding: 8px 15px;
+                 font-size: 0.9em;
+                 margin-top: var(--spacing-md);
+             }
+        }
+
+         @media (max-width: 480px) {
+             body {
+                 padding: var(--spacing-xs);
+             }
+             .container {
+                 padding: var(--spacing-xs);
+                 margin: var(--spacing-xs) auto;
+             }
+             h1 {
+                 font-size: 1.8em;
+             }
+              .flash-message {
+                 padding: var(--spacing-xs);
+                 margin-bottom: var(--spacing-xs);
+                 font-size: 0.85em;
+              }
+              .back-link {
+                 padding: 6px 12px;
+                 font-size: 0.8em;
+                 margin-top: var(--spacing-md);
+              }
+         }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>File Upload Response</h1>
+
+        {# Flash messages block #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+            {% for category, message in messages %}
+              <div class="flash-message {{ category }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        {# Back link button #}
+        <a href="{{ url_for('show_sections') }}" class="back-link">Go back to the homepage</a>
+    </div>
+
+</body>
+</html>

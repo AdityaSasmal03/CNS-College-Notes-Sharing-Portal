@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Sections</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Variables --- */
+        :root {
+            --primary-color: #5a67d8; /* A modern purple/blue */
+            --primary-color-dark: #4c51bf;
+            --background-color: #f7fafc; /* Light clean background */
+            --card-background: #ffffff;
+            --text-color-dark: #2d3748; /* Darker text for better contrast */
+            --text-color-light: #4a5568;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom right, var(--background-color), #e2e8f0); /* Subtle gradient background */
+            margin: 0;
+            padding: var(--spacing-lg) var(--spacing-md); /* Add horizontal padding */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            line-height: 1.6; /* Improved readability */
+            box-sizing: border-box; /* Include padding in element's total width and height */
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit; /* Apply border-box to all elements */
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color-dark);
+            font-weight: 700;
+            margin-top: 0;
+        }
+
+        h2 {
+             font-size: 2.2rem; /* Consistent heading size */
+             margin-bottom: var(--spacing-lg);
+             text-align: center;
+        }
+
+        /* --- Layout --- */
+        .container {
+            width: 100%;
+            max-width: 960px; /* Adjusted max-width based on your original */
+            margin: var(--spacing-md) auto; /* Adjusted margin */
+            padding: var(--spacing-md);
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            z-index: 1;
+        }
+
+        #subject-list {
+            display: grid; /* Use grid for the subject cards */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-md); /* Use consistent gap */
+            margin-bottom: var(--spacing-lg); /* Add space before file list */
+        }
+
+
+        /* --- Components --- */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            background-color: transparent; /* Use transparent background */
+            color: var(--primary-color); /* Use primary color for text */
+            padding: 10px 15px; /* Adjusted padding */
+            border-radius: var(--border-radius); /* Use shared border-radius */
+            margin-bottom: var(--spacing-lg); /* Consistent margin */
+            transition: all 0.2s ease-in-out;
+            font-weight: 600;
+            border: 1px solid var(--primary-color); /* Add a primary color border */
+             /* Remove absolute positioning from original */
+             position: relative;
+             top: auto;
+             left: auto;
+             margin-top: 0;
+        }
+
+         /* Add hover effect similar to the previous back button */
+         .back-btn:hover {
+            background-color: var(--primary-color);
+            color: var(--card-background); /* White text on hover */
+            box-shadow: var(--shadow-light);
+         }
+
+         /* Add SVG icon styling if you decide to add one */
+         .back-btn svg {
+             margin-right: 8px;
+             transition: margin-right 0.2s ease-in-out;
+         }
+
+         .back-btn:hover svg {
+              margin-right: 12px;
+         }
+
+
+        /* Styling the existing .subject-card to look like the modern card */
+        .subject-card {
+            padding: var(--spacing-md); /* Adjusted padding */
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid transparent; /* Add a transparent border */
+            display: flex; /* Use flexbox for content alignment */
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Align content to the top */
+            /* Remove original inline-block styles */
+            width: auto;
+            margin-bottom: 0;
+            margin-right: 0 !important; /* Override the nth-child margin */
+            vertical-align: top; /* Keep vertical alignment */
+            position: relative; /* Keep relative for button positioning */
+             padding-bottom: calc(var(--spacing-md) + 40px); /* Add padding for button space */
+        }
+
+        .subject-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--primary-color); /* Highlight border on hover */
+        }
+
+        .subject-card .icon { /* Styling for optional icon within subject-card */
+            margin-bottom: var(--spacing-md);
+            color: var(--primary-color);
+        }
+
+        .subject-card .icon svg {
+             width: 48px;
+             height: 48px;
+        }
+
+        /* --- Subject Card Specific Inner Element Styles --- */
+        .subject-card .subject-title {
+            font-size: 1.4rem; /* Slightly larger title */
+            font-weight: 700; /* Bolder title */
+            margin-bottom: var(--spacing-sm); /* Use consistent spacing */
+            color: var(--text-color-dark); /* Use dark text color */
+        }
+
+        .subject-card .subject-info {
+            color: var(--text-color-light);
+            margin-bottom: var(--spacing-xs); /* Use consistent spacing */
+            font-size: 0.95em;
+            word-break: break-word;
+            text-align: center; /* Center text within the card */
+            width: 100%; /* Ensure it takes full width for centering */
+        }
+
+        .subject-card .subject-info strong {
+             color: var(--text-color-dark); /* Make strong text darker */
+        }
+
+        .subject-card .subject-info:last-of-type {
+            margin-bottom: 0;
+        }
+
+        /* Styling the existing .upload-button-card (inside subject-card) */
+        .upload-button-card {
+            background-color: #28a745; /* Keep green color */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: var(--border-radius); /* Use shared border-radius */
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            font-weight: 600;
+            position: absolute; /* Keep absolute positioning as in original */
+            bottom: var(--spacing-sm); /* Position consistently */
+            right: var(--spacing-sm); /* Position consistently */
+        }
+
+        .upload-button-card:hover {
+            background-color: #218838; /* Darker green on hover */
+            box-shadow: var(--shadow-light);
+        }
+
+        /* --- File List Section --- */
+        .contents-list-title { /* Styling the existing contents-list-title */
+            font-size: 1.8rem; /* Consistent heading size */
+            font-weight: 700;
+            margin-bottom: var(--spacing-lg); /* Consistent spacing */
+            color: var(--text-color-dark); /* Use dark text color */
+            border-bottom: 2px solid #eee; /* Consistent border */
+            padding-bottom: 10px; /* Consistent padding */
+        }
+
+         #file-list { /* Styling the existing file-list container */
+             display: flex; /* Use flexbox for file cards */
+             flex-direction: column; /* Stack file cards vertically */
+             gap: var(--spacing-sm); /* Gap between file cards */
+         }
+
+        /* Styling the existing .file-card */
+        .file-card {
+            background-color: var(--background-color); /* Use light background color */
+            border: 1px solid #e2e8f0; /* Lighter border */
+            border-radius: var(--border-radius); /* Use shared border-radius */
+            padding: var(--spacing-sm) var(--spacing-md); /* Adjusted padding */
+            margin-bottom: 0; /* Remove original margin-bottom as gap handles it */
+            box-shadow: var(--shadow-light); /* Use shared shadow */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+             flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+
+        .file-info {
+            flex-grow: 1;
+            margin-right: var(--spacing-md); /* Use consistent spacing */
+             word-break: break-word; /* Prevent long filenames from overflowing */
+             min-width: 0; /* Allow flex item to shrink */
+        }
+        .file-info h4 { /* Styling the file name heading */
+             font-size: 1.1em;
+             font-weight: 600;
+             margin-bottom: var(--spacing-xs);
+             color: var(--text-color-dark);
+        }
+
+        .file-info p {
+            margin-bottom: var(--spacing-xs); /* Consistent spacing */
+            font-size: 0.95em;
+            color: var(--text-color-light); /* Use light text color */
+        }
+        .file-info p strong {
+            font-weight: 600;
+            color: var(--text-color-dark); /* Make strong text darker */
+        }
+
+         .file-actions { /* Container for open and delete buttons */
+             display: flex;
+             gap: var(--spacing-xs); /* Gap between buttons */
+             align-items: center;
+             flex-shrink: 0; /* Prevent buttons from shrinking */
+         }
+
+        /* Styling the existing .open-button */
+        .open-button {
+            background-color: var(--primary-color); /* Use primary color */
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: var(--border-radius); /* Use shared border-radius */
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+             margin-right: 0; /* Remove original margin-right */
+             display: inline-block; /* Ensure it behaves like a block for padding/margin */
+             text-decoration: none; /* Ensure link inside has no underline */
+        }
+
+         .open-button a {
+             text-decoration: none; /* Remove underline from link */
+             color: inherit; /* Inherit color from button */
+         }
+
+        .open-button:hover {
+            background-color: var(--primary-color-dark); /* Darker primary on hover */
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Styling the existing .delete-button */
+        .delete-button {
+            background-color: #dc3545; /* Keep red color */
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: var(--border-radius); /* Use shared border-radius */
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+             display: inline-block; /* Ensure it behaves like a block */
+        }
+
+        .delete-button:hover {
+            background-color: #bd2130; /* Darker red on hover */
+            box-shadow: var(--shadow-light);
+        }
+
+        /* --- Upload Form and Overlay --- */
+        #upload-form {
+            margin-top: 0;
+            padding: var(--spacing-md);
+            border: none;
+            border-radius: var(--border-radius);
+            background-color: var(--card-background);
+            text-align: left;
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow-medium);
+            box-sizing: border-box; /* Ensure padding is included */
+        }
+
+        #upload-form h3 {
+            margin-top: 0;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-color-dark);
+            font-size: 1.5em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: var(--spacing-sm);
+        }
+
+        #upload-form div {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        #upload-form label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-weight: 600;
+            color: var(--text-color-dark);
+        }
+
+        #upload-form input[type="text"],
+        #upload-form input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: var(--border-radius);
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+
+        /* Style for the custom file upload button */
+        .custom-file-upload {
+            border: 1px solid var(--text-color-light);
+            display: inline-block;
+            padding: 10px 12px;
+            cursor: pointer;
+            border-radius: var(--border-radius);
+            background-color: var(--background-color);
+            color: var(--text-color-dark);
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            font-weight: 400;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #e2e8f0;
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Hide the actual file input */
+        #file-input {
+            display: none;
+        }
+
+        #file-selected-name {
+            display: inline-block;
+            margin-left: var(--spacing-sm);
+            font-size: 0.9em;
+            color: var(--text-color-light);
+            vertical-align: middle;
+            word-break: break-all; /* Break long filenames */
+        }
+
+        #upload-form button[type="submit"] {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            font-weight: 600;
+            margin-top: var(--spacing-sm);
+            width: auto; /* Adjust width for button */
+        }
+
+        #upload-form button[type="submit"]:hover {
+            background-color: var(--primary-color-dark);
+            box-shadow: var(--shadow-light);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            display: none;
+            backdrop-filter: blur(3px);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-color-light);
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .close-button:hover {
+            color: var(--text-color-dark);
+        }
+
+        /* --- Responsive Styles --- */
+        @media (max-width: 992px) { /* Adjust breakpoint for wider container */
+             .container {
+                 max-width: 768px; /* Smaller max-width on medium screens */
+             }
+         }
+
+
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-md) var(--spacing-sm);
+            }
+
+            .container {
+                padding: var(--spacing-md) var(--spacing-sm);
+                margin-top: var(--spacing-sm);
+            }
+
+            h2 {
+                font-size: 1.8rem;
+                margin-bottom: var(--spacing-md);
+            }
+
+            /* Subject list grid stacks on small screens */
+            #subject-list {
+                 grid-template-columns: 1fr; /* Stack cards vertically */
+                 gap: var(--spacing-sm); /* Adjust gap */
+                 margin-bottom: var(--spacing-md); /* Adjust margin */
+            }
+
+            .subject-card { /* Apply changes to subject-card */
+                 padding: var(--spacing-md);
+                 padding-bottom: calc(var(--spacing-md) + 40px); /* Keep space for button */
+            }
+
+            .upload-button-card { /* Keep absolute positioning on small screens */
+                 position: absolute;
+                 bottom: var(--spacing-sm);
+                 right: var(--spacing-sm);
+                 width: auto; /* Let button size naturally */
+            }
+
+             .file-card { /* File card stacks content */
+                 flex-direction: column;
+                 align-items: flex-start;
+                 padding: var(--spacing-sm);
+             }
+
+             .file-info {
+                 margin-right: 0;
+                 margin-bottom: var(--spacing-sm);
+             }
+
+             .file-actions { /* Buttons stack/wrap */
+                  width: 100%;
+                  justify-content: flex-start;
+             }
+
+             .open-button, .delete-button {
+                 width: auto; /* Let button size naturally */
+                 text-align: center; /* Center text */
+             }
+
+
+            .back-btn {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: var(--spacing-md);
+                display: inline-flex;
+            }
+
+            #upload-form {
+                max-height: 90vh;
+                overflow-y: auto;
+                padding: var(--spacing-sm);
+            }
+
+            #upload-form h3 {
+                font-size: 1.3em;
+            }
+
+             #upload-form input[type="text"],
+             #upload-form input[type="file"],
+             #upload-form button[type="submit"],
+             .custom-file-upload {
+                padding: 8px;
+             }
+
+             #file-selected-name {
+                 margin-left: var(--spacing-xs);
+                 word-break: break-all;
+             }
+        }
+
+         /* For smaller mobile devices */
+         @media (max-width: 480px) {
+              h2 {
+                  font-size: 1.6rem; /* Slightly smaller heading */
+              }
+
+             .subject-card .subject-title {
+                 font-size: 1.2rem; /* Slightly smaller subject title */
+             }
+
+             .upload-button-card {
+                 padding: 8px 12px;
+             }
+
+              .file-info h4 {
+                  font-size: 1em;
+              }
+
+              .open-button, .delete-button {
+                  font-size: 0.85em;
+                  padding: 6px 10px;
+              }
+
+              .custom-file-upload {
+                  padding: 8px; /* Keep padding */
+              }
+         }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {# Back button using the shared class and including SVG icon #}
+        <a href="{{ url_for('show_sections') }}" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Back
+        </a>
+
+        <h2>Subject Sections</h2>
+
+        {# Keep the existing subject list structure #}
+        <div id="subject-list">
+            {# Keep the existing Jinja2 loop for subjects #}
+            {% for subject in teacher_data %}
+            {# Keep the existing subject card class and structure #}
+            <div class="subject-card">
+                {# Keep existing Jinja2 and content #}
+                <h3 class="subject-title">{{ subject.Groupname }}</h3>
+                <p class="subject-info">
+                    Members:
+                    {% if subject.members == "ALL" %}
+                        All
+                    {% else %}
+                        {{ subject.members|join(' and ') }}
+                    {% endif %}
+                </p>
+                {# Keep the existing upload button with its class and onclick #}
+                <button class="upload-button-card" onclick="showUploadForm('{{ subject.Groupname }}')">Upload File</button>
+            </div>
+            {% endfor %}
+        </div>
+
+        {# Keep the existing heading for All Files #}
+        <h2>All Files</h2>
+        {# Keep the existing file list structure #}
+        <div id="file-list">
+            {# Keep the existing Jinja2 loop for files #}
+            {% for content in contents %}
+            {# Keep the existing file card class and structure #}
+            <div class="file-card">
+                {# Keep existing file info content #}
+                <div class="file-info">
+                    <h4>{{ content.file_name }}</h4>
+                    {% if 'group' in content %}
+                        <p><strong>Group:</strong> {{ content.group }}</p>
+                    {% endif %}
+                    {% if 'by' in content %}
+                        <p><strong>Uploaded By:</strong> {{ content.by }}</p>
+                    {% endif %}
+                    {% if 'uploaded_on' in content %}
+                        <p><strong>Uploaded On:</strong> {{ content.uploaded_on }}</p>
+                    {% endif %}
+
+                    {# Wrap buttons in a div for better layout control #}
+                     <div class="file-actions">
+                         {# Keep the existing open button structure #}
+                         <a href="{{ content.link }}" target="_blank" class="open-button">open</a>
+                         {# Keep the existing delete form #}
+                         <form action="{{ url_for('common_delete') }}" method="POST" style="display: inline;">
+                             {# hidden form to send data to url #}
+                            <input type="hidden" value="{{ content.group }}" name="group">
+                            <input type="hidden" value="{{ content.fileid }}" name="fileid">
+                            {# Keep the existing delete button class #}
+                            <button type="submit" class="delete-button">Delete</button>
+                         </form>
+                     </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {# Keep the existing upload form with its ID and content #}
+    <form id="upload-form" method="POST" action="{{ url_for('upload_to_drive') }}" enctype="multipart/form-data">
+        <button type="button" class="close-button" onclick="hideUploadForm()">×</button>
+        <h3>Upload New File</h3>
+        <div>
+            <label for="filename">Filename:</label>
+            <input type="text" id="filename" name="filename" required>
+        </div>
+        <div>
+            <label for="file-input" class="custom-file-upload">Choose File</label>
+            <input type="file" id="file-input" name="file" accept=".doc,.docx,.ppt,.pptx,.pdf" required style="display: none;">
+            <span id="file-selected-name">No file chosen</span>
+        </div>
+        <input type="hidden" id="groupname" name="groupname" value="">
+        <button type="submit" class="view-group-button">Upload to Google Drive</button> {# Using view-group-button class for styling #}
+        <p style="font-size: 0.9em; color: var(--text-color-light); margin-top: 10px;">Supported formats: doc, docx, ppt, pptx, pdf</p>
+    </form>
+
+    {# Keep the existing overlay div #}
+    <div id="overlay" class="overlay" onclick="hideUploadForm()"></div>
+
+    {# Keep the existing JavaScript block #}
+    <script>
+        const uploadForm = document.getElementById('upload-form');
+        const fileInput = document.getElementById('file-input');
+        const fileSelectedName = document.getElementById('file-selected-name');
+        const filenameInput = document.getElementById('filename');
+        const overlay = document.getElementById('overlay');
+        const groupnameInput = document.getElementById('groupname');
+
+        function showUploadForm(groupName) {
+            groupnameInput.value = groupName;
+            uploadForm.style.display = 'block';
+            overlay.style.display = 'block';
+            // Prevent scrolling on body when overlay is active
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideUploadForm() {
+            uploadForm.style.display = 'none';
+            overlay.style.display = 'none';
+            groupnameInput.value = ''; // Clear the groupname when closing
+            fileInput.value = ''; // Clear file input
+            fileSelectedName.textContent = 'No file chosen'; // Reset file name display
+            filenameInput.value = ''; // Clear filename input
+             // Restore scrolling on body
+            document.body.style.overflow = '';
+        }
+
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                fileSelectedName.textContent = this.files[0].name;
+                const originalNameWithoutExtension = this.files[0].name.split('.').slice(0, -1).join('.');
+                filenameInput.value = originalNameWithoutExtension;
+            } else {
+                fileSelectedName.textContent = 'No file chosen';
+                filenameInput.value = '';
+            }
+        });
+
+        // Optional: Close form if escape key is pressed
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && uploadForm.style.display === 'block') {
+                hideUploadForm();
+            }
+        });
+
+        // Optional: Close form if clicking outside the form (on the overlay)
+        overlay.addEventListener('click', function() {
+             hideUploadForm();
+        });
+
+         // Prevent clicks inside the form from closing it via the overlay click listener
+         uploadForm.addEventListener('click', function(event) {
+             event.stopPropagation();
+         });
+    </script>
+</body>
+</html>

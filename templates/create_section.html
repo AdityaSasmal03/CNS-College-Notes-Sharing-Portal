@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Creation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* --- Variables --- */
+        :root {
+            --primary-color: #5a67d8; /* A modern purple/blue */
+            --primary-color-dark: #4c51bf;
+            --background-color: #f7fafc; /* Light clean background */
+            --card-background: #ffffff; /* White */
+            --text-color-dark: #2d3748; /* Darker text for better contrast */
+            --text-color-light: #4a5568;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+
+             /* Button specific colors */
+             --button-primary-bg: var(--primary-color);
+             --button-primary-bg-hover: var(--primary-color-dark);
+             --button-secondary-bg: #6c757d; /* Grey for back/reset */
+             --button-secondary-bg-hover: #5a6268;
+             --button-success-bg: #28a745; /* Green for common group */
+             --button-success-bg-hover: #218838;
+             --button-warning-bg: #ffc107; /* Yellow for reset */
+             --button-warning-bg-hover: #e0a800;
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif; /* Use Poppins for consistency */
+            background: linear-gradient(to bottom right, var(--background-color), #e2e8f0); /* Consistent subtle gradient */
+            margin: 0;
+            padding: var(--spacing-md); /* Add padding to body */
+            color: var(--text-color-light);
+            line-height: 1.6;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+             /* Added padding-top to body to prevent fixed button from overlapping content */
+             padding-top: calc(var(--spacing-md) + 40px); /* Adjust based on button height and spacing */
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color-dark);
+            font-weight: 700;
+            margin-top: 0;
+        }
+
+        h2 { /* Styling the main form titles */
+             font-size: 1.8rem;
+             margin-bottom: var(--spacing-md);
+             color: var(--primary-color);
+             text-align: center;
+             border-bottom: 2px solid var(--primary-color);
+             padding-bottom: var(--spacing-xs);
+        }
+
+
+        /* --- Layout --- */
+         /* The main container is handled by Tailwind classes: max-w-3xl mx-auto sm:px-6 lg:px-8 space-y-8 */
+
+        /* --- Components --- */
+        /* Styling the absolute positioned back button */
+        .absolute.top-4.right-4 {
+             position: fixed; /* Use fixed positioning */
+             top: var(--spacing-md); /* Use variable for top spacing */
+             right: var(--spacing-md); /* Use variable for right spacing */
+             z-index: 100; /* Ensure it's on top */
+        }
+
+        .bg-gray-300.hover\:bg-gray-400.text-gray-800.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline {
+             /* Existing Tailwind classes for the back button */
+             background-color: var(--button-secondary-bg); /* Use grey color variable */
+             color: white; /* White text for grey button */
+             font-weight: 600; /* Consistent font weight */
+             padding: 10px 16px; /* Consistent padding */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             box-shadow: var(--shadow-light); /* Consistent shadow */
+             transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Consistent transition */
+             display: inline-flex; /* Align icon and text */
+             align-items: center;
+             text-decoration: none; /* Remove underline */
+        }
+
+        .bg-gray-300.hover\:bg-gray-400.text-gray-800.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline:hover {
+             background-color: var(--button-secondary-bg-hover); /* Darker grey on hover */
+             box-shadow: var(--shadow-medium);
+        }
+
+         /* Styling the form containers */
+         .bg-white.shadow-md.rounded-lg.p-6.form-container {
+             background-color: var(--card-background); /* White background */
+             box-shadow: var(--shadow-medium); /* Consistent shadow */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             padding: var(--spacing-md); /* Consistent padding */
+             border: 1px solid #eee; /* Light border */
+         }
+
+         /* Styling the "or" separator */
+         .flex.justify-center.items-center {
+             margin: var(--spacing-md) 0; /* Add vertical margin */
+         }
+
+         .flex.justify-center.items-center .text-xl.font-semibold.text-blue-500 {
+             font-size: 1.5rem; /* Adjusted font size */
+             color: var(--text-color-dark); /* Use dark text color */
+             font-weight: 600;
+         }
+
+
+         /* Styling form labels */
+         .block.text-gray-700.text-sm.font-bold.mb-2 {
+             display: block;
+             color: var(--text-color-dark); /* Dark text color */
+             font-size: 0.95em; /* Slightly larger font size */
+             font-weight: 600; /* Bolder */
+             margin-bottom: var(--spacing-xs); /* Consistent spacing */
+         }
+
+         /* Styling form inputs and selects */
+         .shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus\:outline-none.focus\:shadow-outline {
+             box-shadow: var(--shadow-light); /* Consistent shadow */
+             border: 1px solid #ccc; /* Consistent border */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             width: 100%;
+             padding: 10px 12px; /* Adjusted padding */
+             color: var(--text-color-dark); /* Dark text color */
+             line-height: 1.5;
+             font-family: 'Poppins', sans-serif;
+             font-size: 1em;
+             transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+         }
+
+         .shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus\:outline-none.focus\:shadow-outline:focus {
+             border-color: var(--primary-color); /* Primary color border on focus */
+             box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.3); /* Primary color glow on focus */
+         }
+
+         /* Styling the submit buttons */
+         .bg-blue-500.hover\:bg-blue-700.text-white.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline,
+         .bg-green-500.hover\:bg-green-700.text-white.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline {
+             font-weight: 600; /* Consistent font weight */
+             padding: 10px 20px; /* Adjusted padding */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             box-shadow: var(--shadow-light); /* Consistent shadow */
+             transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Consistent transition */
+             border: none; /* Remove default button border */
+             cursor: pointer;
+             font-family: 'Poppins', sans-serif;
+         }
+
+         /* Specific styles for the blue submit button */
+         .bg-blue-500.hover\:bg-blue-700.text-white.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline {
+             background-color: var(--button-primary-bg); /* Use primary color variable */
+         }
+
+         .bg-blue-500.hover\:bg-blue-700.text-white.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline:hover {
+             background-color: var(--button-primary-bg-hover); /* Darker primary on hover */
+             box-shadow: var(--shadow-medium);
+         }
+
+         /* Specific styles for the green submit button */
+         .bg-green-500.hover\:bg-green-700.text-white.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline {
+             background-color: var(--button-success-bg); /* Use success color variable */
+         }
+
+         .bg-green-500.hover\:bg-green-700.text-white.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline:hover {
+             background-color: var(--button-success-bg-hover); /* Darker success on hover */
+             box-shadow: var(--shadow-medium);
+         }
+
+
+         /* Styling the reset buttons */
+         .ml-2.bg-red-400.hover\:bg-red-500.text-white.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline,
+         .ml-2.bg-yellow-400.hover\:bg-yellow-500.text-gray-800.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline {
+             font-weight: 600; /* Consistent font weight */
+             padding: 10px 20px; /* Adjusted padding */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             box-shadow: var(--shadow-light); /* Consistent shadow */
+             transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Consistent transition */
+             border: none; /* Remove default button border */
+             cursor: pointer;
+             font-family: 'Poppins', sans-serif;
+             margin-left: var(--spacing-sm); /* Consistent left margin */
+         }
+
+         /* Specific styles for the red reset button */
+         .ml-2.bg-red-400.hover\:bg-red-500.text-white.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline {
+             background-color: #ef4444; /* Tailwind red-500 */
+             color: white;
+         }
+          .ml-2.bg-red-400.hover\:bg-red-500.text-white.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline:hover {
+             background-color: #dc2626; /* Tailwind red-600 */
+             box-shadow: var(--shadow-medium);
+          }
+
+
+         /* Specific styles for the yellow reset button */
+         .ml-2.bg-yellow-400.hover\:bg-yellow-500.text-gray-800.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline {
+             background-color: var(--button-warning-bg); /* Use warning color variable */
+             color: var(--text-color-dark); /* Dark text for yellow button */
+         }
+
+         .ml-2.bg-yellow-400.hover\:bg-yellow-500.text-gray-800.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline:hover {
+             background-color: var(--button-warning-bg-hover); /* Darker warning on hover */
+             box-shadow: var(--shadow-medium);
+         }
+
+
+         /* Styling the multiple select hint text */
+         .text-gray-600.text-xs.italic {
+             color: var(--text-color-light); /* Use light text color */
+             font-size: 0.85em; /* Slightly larger font size */
+             font-style: normal; /* Remove italic */
+             margin-top: var(--spacing-xs); /* Add some space above */
+         }
+
+
+        /* GSAP animation class */
+        .form-container {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+
+        /* --- Responsive Styles --- */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-sm);
+                 padding-top: calc(var(--spacing-sm) + 40px);
+            }
+
+            .absolute.top-4.right-4 {
+                top: var(--spacing-sm);
+                right: var(--spacing-sm);
+            }
+
+            .bg-gray-300.hover\:bg-gray-400.text-gray-800.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline {
+                 padding: 8px 12px;
+                 font-size: 0.9em;
+            }
+
+             h2 {
+                 font-size: 1.6rem;
+                 margin-bottom: var(--spacing-md);
+                 padding-bottom: var(--spacing-xs);
+             }
+
+             .bg-white.shadow-md.rounded-lg.p-6.form-container {
+                 padding: var(--spacing-sm);
+             }
+
+             .block.text-gray-700.text-sm.font-bold.mb-2 {
+                 font-size: 0.9em;
+                 margin-bottom: var(--spacing-xs);
+             }
+
+             .shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus\:outline-none.focus\:shadow-outline {
+                 padding: 8px 10px;
+                 font-size: 0.95em;
+             }
+
+             .bg-blue-500.hover\:bg-blue-700.text-white.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline,
+             .bg-green-500.hover\:bg-green-700.text-white.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline,
+             .ml-2.bg-red-400.hover\:bg-red-500.text-white.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline,
+             .ml-2.bg-yellow-400.hover\:bg-yellow-500.text-gray-800.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline {
+                 padding: 8px 15px;
+                 font-size: 0.9em;
+             }
+
+             .ml-2.bg-red-400.hover\:bg-red-500.text-white.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline,
+             .ml-2.bg-yellow-400.hover\:bg-yellow-500.text-gray-800.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline {
+                 margin-left: var(--spacing-xs);
+             }
+
+             .text-gray-600.text-xs.italic {
+                 font-size: 0.8em;
+             }
+
+             .flex.justify-center.items-center .text-xl.font-semibold.text-blue-500 {
+                 font-size: 1.3rem;
+             }
+
+        }
+
+         @media (max-width: 480px) {
+             body {
+                 padding: var(--spacing-xs);
+                 padding-top: calc(var(--spacing-xs) + 40px);
+             }
+             .absolute.top-4.right-4 {
+                 top: var(--spacing-xs);
+                 right: var(--spacing-xs);
+             }
+             .bg-gray-300.hover\:bg-gray-400.text-gray-800.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline {
+                 padding: 6px 10px;
+                 font-size: 0.8em;
+             }
+              h2 {
+                 font-size: 1.4rem;
+                 margin-bottom: var(--spacing-md);
+             }
+              .bg-white.shadow-md.rounded-lg.p-6.form-container {
+                 padding: var(--spacing-xs);
+             }
+             .block.text-gray-700.text-sm.font-bold.mb-2 {
+                 font-size: 0.85em;
+                 margin-bottom: var(--spacing-xs);
+             }
+              .shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus\:outline-none.focus\:shadow-outline {
+                 padding: 6px 8px;
+                 font-size: 0.9em;
+              }
+              .bg-blue-500.hover\:bg-blue-700.text-white.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline,
+              .bg-green-500.hover\:bg-green-700.text-white.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline,
+              .ml-2.bg-red-400.hover\:bg-red-500.text-white.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline,
+              .ml-2.bg-yellow-400.hover\:bg-yellow-500.text-gray-800.font-bold.py-2.px-4.rounded.focus\:outline-none.focus\:shadow-outline {
+                 padding: 6px 12px;
+                 font-size: 0.8em;
+             }
+              .flex.justify-center.items-center .text-xl.font-semibold.text-blue-500 {
+                 font-size: 1.2rem;
+             }
+         }
+
+    </style>
+    <script>
+        var branchesData = `{{ branches|tojson|safe }}`;
+        var branches = JSON.parse(branchesData);
+
+        var error_from_python = "{{ error }}";
+        if (error_from_python) {
+            // Using a simple alert as per original JS, but recommend a modal for better UX
+            alert(error_from_python);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // GSAP animation for form containers
+            gsap.to('.form-container', { opacity: 1, y: 0, duration: 0.6, stagger: 0.2 });
+        });
+
+        function load_branches() {
+            var selected_semester = document.getElementById("semester").value;
+            branch_ddl_values = []
+            for(let i=0; i < branches.length; i++){
+                if(branches[i].SemesterID == selected_semester){
+                    var branch = branches[i];
+                    branch_ddl_values.push(branch);
+                }
+            }
+            console.log(branch_ddl_values);
+            populateBranchDropdown(branch_ddl_values);
+        }
+
+        function populateBranchDropdown(branchList){
+            const branchSelect = document.getElementById('branch');
+            // Clear existing options except the default disabled one
+            branchSelect.innerHTML = '<option value="0" disabled selected>Select branch</option>';
+            branchList.forEach(branch => {
+                const option = document.createElement('option');
+                option.value = branch.BranchID;
+                option.textContent = branch.BranchName.toUpperCase();
+                branchSelect.appendChild(option);
+            });
+        }
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen py-6 sm:py-12">
+    <div class="max-w-3xl mx-auto sm:px-6 lg:px-8 space-y-8">
+
+        {# Back button - positioned absolutely/fixed at the top right #}
+        <div class="absolute top-4 right-4 sm:top-6 sm:right-6">
+            <a href="{{ url_for('back_admin') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Back
+            </a>
+        </div>
+
+        {# Form container for creating a group for a specific semester and branch #}
+        <div class="bg-white shadow-md rounded-lg p-6 form-container">
+            <h2 class="text-xl font-semibold text-blue-500 mb-4">Create a group for a particular semester and branch</h2>
+            <form method="POST" action="{{ url_for('create_section') }}">
+                <div class="mb-4">
+                    <label for="semester" class="block text-gray-700 text-sm font-bold mb-2">Semester</label>
+                    <select id="semester" name="semester" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" onchange="load_branches()">
+                        <option value="" disabled selected>Select Semester</option>
+                        {% for semester in semesters %}
+                        <option value="{{ semester.SemesterID }}">{{ semester.SemesterName }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="branch" class="block text-gray-700 text-sm font-bold mb-2">Branch</label>
+                    <select id="branch" name="branch" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="" disabled selected>Select Branch</option>
+                    </select>
+                </div>
+                <div class="flex items-center justify-end">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" name="non-common">
+                        Create Group
+                    </button>
+                    <button type="reset" class="ml-2 bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"> Reset </button>
+                </div>
+            </form>
+        </div>
+
+        {# "or" separator #}
+        <div class="flex justify-center items-center">
+            <div class="text-xl font-semibold text-blue-500 my-4">or</div>
+        </div>
+
+        {# Form container for creating a common group #}
+        <div class="bg-white shadow-md rounded-lg p-6 form-container">
+            <h2 class="text-xl font-semibold text-blue-500 mb-4">Create a common group</h2>
+            <form method="POST" action="{{ url_for('create_section') }}">
+                <div class="mb-4">
+                    <label for="groupName" class="block text-gray-700 text-sm font-bold mb-2">Group Name</label>
+                    <input type="text" id="groupName" name="groupName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter group name">
+                </div>
+                <div class="mb-4">
+                    <label for="members" class="block text-gray-700 text-sm font-bold mb-2">Members</label>
+                    <select id="members" name="members" multiple class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="" disabled selected>Select Members</option>
+                        {% for member in members %}
+                        <option value="{{ member }}">{{ member }}</option>
+                        {% endfor %}
+                    </select>
+                    <p class="text-gray-600 text-xs italic">Hold Ctrl (or Cmd on Mac) to select multiple members.</p>
+                </div>
+                <div class="flex items-center justify-end">
+                    <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" name="common">
+                        Create Common Group
+                    </button>
+                    <button type="reset" class="ml-2 bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"> Reset </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</body>
+</html>

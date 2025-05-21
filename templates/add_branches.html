@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Groups</title>
+     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        /* --- Variables --- */
+        :root {
+            --primary-color: #5a67d8; /* A modern purple/blue */
+            --primary-color-dark: #4c51bf;
+            --background-color: #f7fafc; /* Light clean background */
+            --card-background: #ffffff; /* White */
+            --text-color-dark: #2d3748; /* Darker text for better contrast */
+            --text-color-light: #4a5568;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+
+             /* Specific colors for this page */
+            --section-title-color-common: #00b894; /* Greenish for common */
+            --section-title-color-individual: #3182ce; /* Blueish for individual */
+            --card-bg-common: #e0f7fa; /* Light blueish */
+            --card-bg-individual: #e8eaf6; /* Light purplish */
+            --card-border-common: #b2ebf2;
+            --card-border-individual: #c5cbe9;
+            --button-enroll-bg: #28a745; /* Green */
+            --button-enroll-bg-hover: #218838;
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif; /* Use Poppins */
+            background: linear-gradient(to bottom right, var(--background-color), #e2e8f0); /* Subtle gradient */
+            margin: 0;
+            padding: var(--spacing-md); /* Consistent padding */
+            color: var(--text-color-light);
+            line-height: 1.6;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color-dark);
+            font-weight: 700;
+            margin-top: 0;
+        }
+
+        h2 { /* Styling the main page title */
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-md);
+            border-bottom: 3px solid var(--primary-color); /* Use primary color */
+            padding-bottom: var(--spacing-sm);
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        h3 { /* Default h3 style */
+            font-size: 1.3em;
+            color: var(--text-color-dark);
+            font-weight: 600;
+        }
+
+
+        /* --- Layout --- */
+        .container {
+            width: 100%;
+            max-width: 1000px; /* Keep original max-width */
+            margin: var(--spacing-md) auto; /* Consistent margin */
+            background-color: var(--card-background); /* White background */
+            padding: var(--spacing-md); /* Consistent padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            box-shadow: var(--shadow-medium); /* Consistent shadow */
+            position: relative; /* Needed for potential absolute positioning inside */
+        }
+
+        .group-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Keep original minmax */
+            gap: var(--spacing-md); /* Consistent gap */
+            margin-bottom: var(--spacing-lg); /* Consistent spacing */
+        }
+
+
+        /* --- Components --- */
+        .back-button { /* Styling the back button */
+            display: inline-flex; /* Use inline-flex */
+            align-items: center;
+            padding: 10px 20px; /* Consistent padding */
+            background-color: #6c757d; /* Grey color */
+            color: white;
+            border: none;
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            text-decoration: none;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            margin-bottom: var(--spacing-md); /* Consistent spacing */
+            box-shadow: var(--shadow-light);
+            font-weight: 600;
+        }
+
+        .back-button:hover {
+            background-color: #5a6268; /* Darker grey on hover */
+            box-shadow: var(--shadow-medium);
+        }
+
+          /* Section Titles for groups */
+          .group-section-title {
+              font-size: 1.8rem;
+              margin-top: var(--spacing-lg); /* Add more space above section */
+              margin-bottom: var(--spacing-md);
+              border-bottom: 2px solid;
+              padding-bottom: var(--spacing-xs);
+              font-weight: 700;
+              text-align: left; /* Align left */
+          }
+
+          .group-section-title { /* Specific color for Common Groups */
+              color: var(--section-title-color-common);
+              border-color: var(--section-title-color-common);
+          }
+
+
+        /* Card styling */
+        .card {
+            background-color: var(--card-background); /* White background */
+            padding: var(--spacing-md); /* Consistent padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            box-shadow: var(--shadow-light); /* Consistent shadow */
+            border: 1px solid #eee; /* Light border */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            display: flex; /* Use flexbox for internal layout */
+            flex-direction: column;
+            justify-content: space-between; /* Push button to bottom */
+        }
+
+
+        .card:hover {
+            transform: translateY(-10px); /* Consistent hover effect */
+            box-shadow: var(--shadow-medium);
+        }
+
+        .card-title {
+            font-size: 1.5em; /* Larger card title */
+            font-weight: 700; /* Bolder */
+            color: var(--primary-color); /* Use primary color */
+            margin-bottom: var(--spacing-sm);
+            text-align: center; /* Center card title */
+            border-bottom: 1px solid #eee; /* Light border below title */
+            padding-bottom: var(--spacing-xs);
+            word-break: break-word; /* Allow long words to break */
+            overflow-wrap: break-word; /* Deprecated but good for compatibility */
+        }
+
+        .card-description {
+            color: var(--text-color-light); /* Use light text color */
+            font-size: 1em; /* Adjusted font size */
+            margin-bottom: var(--spacing-md); /* More space before button */
+            flex-grow: 1; /* Allow description to take up space */
+             word-break: break-word; /* Ensure description text also wraps if needed */
+             overflow-wrap: break-word;
+        }
+
+        /* Enroll Button styling */
+        .enroll-button {
+            background-color: var(--button-enroll-bg); /* Green color */
+            color: white;
+            border: none;
+            padding: 10px 20px; /* Adjusted padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: var(--shadow-light);
+            font-family: 'Poppins', sans-serif; /* Use Poppins */
+            align-self: center; /* Center the button within the flex container */
+            text-decoration: none; /* Ensure it looks like a button even if it's a link */
+            display: inline-block; /* Ensure proper button behavior and padding */
+        }
+
+        .enroll-button:hover {
+            background-color: var(--button-enroll-bg-hover); /* Darker green on hover */
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Paragraph for empty state */
+        p {
+            text-align: center;
+            color: var(--text-color-light);
+            font-style: italic;
+            margin-top: var(--spacing-md);
+        }
+
+        /* Flash messages styling */
+        .flashes {
+            list-style: none;
+            padding: 0;
+            margin-bottom: var(--spacing-md); /* Consistent spacing */
+        }
+        .flash {
+            padding: var(--spacing-sm) var(--spacing-md); /* Consistent padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            margin-bottom: var(--spacing-sm); /* Consistent spacing */
+            font-weight: 600;
+            box-shadow: var(--shadow-light);
+             word-break: break-word; /* Ensure flash messages also wrap */
+             overflow-wrap: break-word;
+        }
+        .flash.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .flash.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .flash.warning {
+            background-color: #fff3cd;
+            color: #85640c;
+            border: 1px solid #ffeeba;
+        }
+
+        /* Modal Styling */
+        .modal {
+            display: none; /* Hidden by default, will be shown by JS */
+            position: fixed; /* Stay in place */
+            z-index: 100; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.6); /* Black background with opacity */
+            backdrop-filter: blur(5px); /* Blur effect */
+            justify-content: center; /* Use flexbox for centering */
+            align-items: center;
+        }
+        .modal-content {
+            background-color: var(--card-background); /* White background */
+            margin: auto; /* Auto margin for centering */
+            padding: var(--spacing-md); /* Consistent padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            border: 1px solid #888;
+            width: 90%; /* Adjusted width */
+            max-width: 500px; /* Maximum width */
+            box-shadow: var(--shadow-medium);
+            position: relative;
+        }
+        .modal h2 { /* Styling title inside modal */
+            font-size: 1.8rem;
+            margin-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: var(--spacing-xs);
+            text-align: center;
+            color: var(--text-color-dark);
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute; /* Position absolute within modal-content */
+            top: 10px;
+            right: 20px;
+            transition: color 0.2s ease-in-out;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--text-color-dark); /* Darker color on hover/focus */
+            text-decoration: none;
+        }
+
+        /* Enrollment Form Styling */
+        .enroll-form label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-weight: 600;
+            color: var(--text-color-dark);
+            font-size: 0.95em;
+        }
+        .enroll-form input[type="text"],
+        .enroll-form input[type="email"],
+        .enroll-form select {
+            width: 100%;
+            padding: 10px; /* Consistent padding */
+            margin-bottom: var(--spacing-sm); /* Consistent spacing */
+            border: 1px solid #ccc;
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            box-sizing: border-box;
+            font-size: 1em;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .enroll-form input[readonly] {
+            background-color: #f0f0f0; /* Grey out readonly fields */
+            cursor: not-allowed;
+        }
+
+        .enroll-form button[type="submit"] {
+            background-color: var(--button-enroll-bg); /* Green color */
+            color: white;
+            border: none;
+            padding: 12px 20px; /* Adjusted padding */
+            border-radius: var(--border-radius); /* Consistent border-radius */
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: var(--shadow-light);
+            font-family: 'Poppins', sans-serif;
+            display: block; /* Make button a block for full width */
+            width: 100%;
+            margin-top: var(--spacing-md); /* Space above button */
+        }
+        .enroll-form button[type="submit"]:hover {
+            background-color: var(--button-enroll-bg-hover); /* Darker green on hover */
+            box-shadow: var(--shadow-medium);
+        }
+        .form-group {
+            margin-bottom: var(--spacing-sm); /* Consistent spacing */
+        }
+
+        #existingMembersForm p { /* Styling for text inside existingMembersForm */
+            text-align: left;
+            font-style: normal;
+            color: var(--text-color-dark);
+            margin-bottom: var(--spacing-sm);
+             word-break: break-word; /* Ensure text in modal also wraps */
+             overflow-wrap: break-word;
+        }
+
+        #existingMembersForm p strong {
+            color: var(--primary-color);
+        }
+
+        #existingMembersForm h5 { /* Styling for h5 inside existingMembersForm */
+            font-size: 1.1em;
+            margin-bottom: var(--spacing-xs);
+            color: var(--text-color-dark);
+        }
+
+
+        /* --- Responsive Styles --- */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-sm);
+            }
+            .container {
+                padding: var(--spacing-sm);
+                margin: var(--spacing-sm) auto;
+            }
+            h2 {
+                font-size: 2rem;
+                padding-bottom: var(--spacing-xs);
+                margin-bottom: var(--spacing-md);
+            }
+            .group-section-title {
+                font-size: 1.6rem;
+                margin-top: var(--spacing-md);
+                margin-bottom: var(--spacing-sm);
+                padding-bottom: 6px;
+            }
+            .group-grid {
+                gap: var(--spacing-sm);
+            }
+            .card {
+                padding: var(--spacing-sm);
+            }
+            .card-title {
+                font-size: 1.3em;
+                margin-bottom: var(--spacing-xs);
+                padding-bottom: var(--spacing-xs);
+            }
+            .card-description {
+                font-size: 0.9em;
+                margin-bottom: var(--spacing-sm);
+            }
+            .enroll-button {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+            .flash {
+                padding: 8px 12px;
+                margin-bottom: var(--spacing-xs);
+                font-size: 0.9em;
+            }
+            .modal-content {
+                width: 95%;
+                padding: var(--spacing-md);
+            }
+            .modal h2 {
+                font-size: 1.6rem;
+            }
+            .close-button {
+                font-size: 24px;
+                top: 8px;
+                right: 12px;
+            }
+            .enroll-form input[type="text"],
+            .enroll-form input[type="email"],
+            .enroll-form select {
+                padding: 8px;
+                margin-bottom: var(--spacing-xs);
+                font-size: 0.95em;
+            }
+            .enroll-form button[type="submit"] {
+                padding: 10px 15px;
+                font-size: 1em;
+                 margin-top: var(--spacing-md);
+            }
+            .enroll-form label {
+                font-size: 0.9em;
+            }
+            #existingMembersForm p {
+                font-size: 0.95em;
+                margin-bottom: var(--spacing-sm);
+            }
+             #existingMembersForm h5 {
+                font-size: 1em;
+             }
+
+        }
+           @media (max-width: 480px) {
+               h2 {
+                   font-size: 1.8rem;
+               }
+               .group-section-title {
+                   font-size: 1.4rem;
+               }
+               .card-title {
+                   font-size: 1.2em;
+               }
+                .enroll-button {
+                   padding: 6px 12px;
+                   font-size: 0.85em;
+                }
+                .modal h2 {
+                   font-size: 1.4rem;
+                }
+                .enroll-form button[type="submit"] {
+                   font-size: 0.95em;
+                }
+            }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="{{ url_for('back_teacher') }}" class="back-button">Back</a>
+        <h2>Available Groups</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+                <li class="flash {{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+
+        {% if common_groups %}
+            <h3 class="group-section-title">Common Groups</h3>
+            <div class="group-grid">
+                {% for group in common_groups %}
+                <div class="card">
+                    <h3 class="card-title">{{ group.groupname|upper }}</h3>
+                    <p class="card-description">
+                        Created By: {{ group.created_by }}<br>
+                        Created On: {{ group.created_on }}<br>
+                        Members: {{ group.members|join(', ') }}
+                    </p>
+                    <button class="enroll-button" onclick="openEnrollForm('enroll-form-common-{{ loop.index }}', '{{ group.groupname }}', true, '', '')">
+                        Join
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No common groups available.</p>
+        {% endif %}
+
+        {% if individual_groups %}
+            <h3 class="group-section-title">Individual Groups</h3>
+            <div class="group-grid">
+                {% for group in individual_groups %}
+                <div class="card">
+                    <h3 class="card-title">{{ group.groupname|upper }}</h3>
+                    <p class="card-description">
+                        Created By: {{ group.created_by }}<br>
+                        Created On: {{ group.created_on }}<br>
+                        Branch: {{ group.branch|capitalize }}, {{ group.semester|capitalize }} semester
+                    </p>
+                    <button class="enroll-button" onclick="openEnrollForm('enroll-form-individual-{{ loop.index }}', '{{ group.groupname }}', false, '{{ group.branch }}', '{{ group.semester }}')">
+                        Join
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No individual groups available for your branch and semester.</p>
+        {% endif %}
+
+        <div id="enrollModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-button" onclick="closeEnrollForm()">&times;</span>
+                <h2>Group Details</h2>
+                <form id="enrollmentForm" class="enroll-form" method="POST" action="{{ url_for('add_branches') }}">
+                    <div id="existingMembersForm" style="display: none;">
+                        <p><strong>Members:</strong> <span id="current_members"></span></p>
+                        <h5>Groupname</h5>
+                        <input type="text" id="groupname_common" name="groupname_common" readonly>
+                        <input type="hidden" id="common_span" name="members" readonly>
+                        <input type="hidden" id="group_name_members" name="group_name_members" readonly>
+                        <button type="submit" name="common_enroll">Enroll</button>
+                    </div>
+
+                    <div id="newGroupForm" style="display: none;">
+                        <div class="form-group">
+                            <label for="teacher_name">Teacher Name:</label>
+                            <input type="text" id="teacher_name" name="teacher_name" value="{{ teacher_data.name }}" readonly>
+                        </div>
+                        <input type="hidden" id="T_ID" name="teacher_id" value="{{ teacher_data.id }}" readonly>
+                        <div class="form-group">
+                            <label for="subject">Subject:</label>
+                            <input type="text" id="subject" name="subject">
+                        </div>
+
+                        <input type="hidden" id="new_group_name" name="new_group_name" readonly>
+                        Branch:
+                        <input type="text" id="branch" name="branch" readonly>
+                        Semester
+                        <input type="text" id="semester" name="semester" readonly>
+                        <button type="submit" name="enroll">Enroll</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById("enrollModal");
+        const existingMembersForm = document.getElementById("existingMembersForm");
+        const newGroupForm = document.getElementById("newGroupForm");
+        const currentMembersSpan = document.getElementById("current_members");
+        const common_span = document.getElementById("common_span");
+        const groupNameMembersInput = document.getElementById("group_name_members");
+        const newGroupNameInput = document.getElementById("new_group_name");
+        const branchInput = document.getElementById("branch");
+        const semesterInput = document.getElementById("semester");
+        const groupname_common_input = document.getElementById("groupname_common");
+
+        // Explicitly hide the modal when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            modal.style.display = 'none';
+        });
+
+
+        function openEnrollForm(formId, groupName, hasMembers, branch, semester) {
+            modal.style.display = "flex"; // Use flex to keep centering
+            existingMembersForm.style.display = hasMembers ? "block" : "none";
+            newGroupForm.style.display = !hasMembers ? "block" : "none";
+
+            if (hasMembers) {
+                let groupMembers = "";
+                "{% for grp in common_groups %}"
+                    if ("{{ grp.groupname }}" === groupName) {
+                        groupMembers = "{{ grp.members|join(', ') }}";
+                    }
+                "{% endfor %}"
+                currentMembersSpan.textContent = groupMembers === "" ? "No members yet" : groupMembers;
+                common_span.value = groupMembers === "" ? "" : groupMembers;
+                groupNameMembersInput.value = groupName;
+                groupname_common_input.value = groupName;
+            } else {
+                newGroupNameInput.value = groupName;
+                branchInput.value = branch.toUpperCase();
+                semesterInput.value = semester;
+
+                // The student list population logic seems incomplete or dependent on other variables
+                // (house_members, year_members) which are not fully defined or used in the provided
+                // HTML/JS snippet for the modal. Removing this part as it's likely not required
+                // for the modal's basic functionality based on the provided code structure.
+                // If you need student dropdowns, this part would need to be re-implemented
+                // with the necessary data passed from the backend.
+                // populateStudentDropdowns(studentList);
+            }
+        }
+
+        function closeEnrollForm() {
+            modal.style.display = "none";
+        }
+
+        // Close modal if clicked outside
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeEnrollForm();
+            }
+        }
+    </script>
+</body>
+</html>

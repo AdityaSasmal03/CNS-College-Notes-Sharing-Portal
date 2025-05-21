@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Notes Sharing Portal</title>
+    {# Modified Tailwind script to include custom color configuration #}
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-navy': { // Define a custom color named 'primary-navy'
+                            50: '#eef2ff',    // Lighter shade (similar to blue-50)
+                            100: '#e0e7ff',   // Lighter shade (similar to blue-100)
+                            600: '#4f46e5',   // Medium shade (similar to blue-600)
+                            700: '#4338ca',   // Darker shade (similar to blue-700)
+                             DEFAULT: '#5a67d8', // Our navy blue primary color
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBgzWkkmhxwOBGgFAWVLwVYlrwksG/g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* --- Variables --- */
+        :root {
+            --primary-color: #5a67d8; /* Our modern navy blue */
+            --primary-color-dark: #4c51bf;
+            --background-color: #dfebff; /* Light clean background */
+            --card-background: #ffffff; /* White */
+            --text-color-dark: #2d3748; /* Darker text for better contrast */
+            --text-color-light: #4a5568;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif; /* Use Poppins for consistency */
+            /* Background handled by Tailwind classes */
+            /* Centering handled by Tailwind classes */
+            margin: 0;
+            color: var(--text-color-light); /* Default text color using variable */
+            line-height: 1.6;
+            box-sizing: border-box;
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color-dark); /* Ensure headings use the dark text color variable */
+            font-weight: 700; /* Consistent bold weight for headings */
+            margin-top: 0;
+        }
+
+        p {
+             color: var(--text-color-light); /* Ensure paragraphs use the light text color variable */
+        }
+
+
+        /* Adjustments for list items for better spacing/appearance */
+        .list-disc li {
+            margin-bottom: var(--spacing-xs); /* Use variable for list item spacing */
+        }
+
+
+        /* Adjustments for the Get Started Button */
+        /* The Tailwind classes now use primary-navy, matching the variable */
+        .inline-block.px-6.py-3.bg-primary-navy-600.hover\:bg-primary-navy-700.text-white.rounded-lg.text-lg.font-medium.shadow {
+             transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+             box-shadow: var(--shadow-light); /* Use variable for shadow */
+        }
+
+         .inline-block.px-6.py-3.bg-primary-navy-600.hover\:bg-primary-navy-700.text-white.rounded-lg.text-lg.font-medium.shadow:hover {
+             box-shadow: var(--shadow-medium); /* Darker shadow on hover */
+         }
+
+
+    </style>
+</head>
+{# Updated body background gradient to use custom primary-navy colors #}
+<body class="bg-gradient-to-br from-primary-navy-50 to-primary-navy-100 min-h-screen flex items-center justify-center">
+    <div class="max-w-4xl bg-white rounded-2xl shadow-xl p-8">
+        {# Updated main title text color #}
+        <h1 class="text-4xl font-extrabold text-primary-navy-700 text-center mb-4">
+            College Notes Sharing Portal
+        </h1>
+
+        <p class="text-gray-700 text-lg text-center mb-8 max-w-2xl mx-auto">
+            A structured, smart platform built to help students and faculty efficiently share, access, and manage academic notes — securely, reliably, and semester-wise.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            {# Updated Key Features card background and heading color #}
+            <div class="bg-primary-navy-50 p-5 rounded-xl shadow-sm border">
+                <h2 class="text-xl font-semibold text-primary-navy-600 mb-2">🚀 Key Features</h2>
+                <ul class="list-disc list-inside text-gray-700 space-y-1">
+                    <li>Role-based dashboards for students, teachers, and admins</li>
+                    <li>Semester & subject-wise categorization</li>
+                    <li>Secure upload via SQL Server + Firebase</li>
+                    <li>Real-time access and filtering by batch/section</li>
+                    <li>Mobile + Desktop friendly UI</li>
+                </ul>
+            </div>
+
+            {# Green section remains unchanged as requested #}
+            <div class="bg-green-50 p-5 rounded-xl shadow-sm border">
+                <h2 class="text-xl font-semibold text-green-600 mb-2">🎯 Our Mission</h2>
+                <p class="text-gray-700">
+                    Eliminate chaos during exam season. Empower students with verified, well-organized notes. Equip faculty with tools to distribute and manage academic content effectively.
+                </p>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center">
+            {# Updated Get Started button background and hover color #}
+            <a href="{{ url_for('login') }}"
+               class="inline-block px-6 py-3 bg-primary-navy-600 hover:bg-primary-navy-700 text-white rounded-lg text-lg font-medium shadow">
+                Get Started
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Register</title>
+    {# Include Tailwind CSS with plugins and custom color config #}
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-navy': { // Define a custom color named 'primary-navy'
+                            50: '#eef2ff',    // Lighter shade
+                            100: '#e0e7ff',   // Lighter shade
+                            200: '#c7d2fe',   // Lighter shade
+                            300: '#a5b4fc',   // Lighter shade
+                            400: '#818cf8',   // Medium shade
+                            500: '#6366f1',   // Medium shade
+                            600: '#4f46e5',   // Medium shade
+                            700: '#4338ca',   // Darker shade
+                            800: '#3730a3',   // Darker shade
+                            900: '#312e81',   // Darker shade
+                            950: '#1e1b4b',   // Darkest shade
+                            DEFAULT: '#5a67d8', // Our navy blue primary color
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    {# Link to Poppins font #}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    {# Link to Font Awesome for icons #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBgzWkkmhxwOBGgFAWVLwVYlrwksG/g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* --- Variables --- */
+        :root {
+            --primary-color: #5a67d8; /* Our modern navy blue */
+            --primary-color-dark: #4c51bf;
+            --background-color: #f7fafc; /* Light clean background */
+            --card-background: #ffffff; /* White */
+            --text-color-dark: #2d3748; /* Darker text for better contrast */
+            --text-color-light: #4a5568;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 60px;
+
+            /* Button colors */
+            --button-primary-bg: var(--primary-color);
+            --button-primary-bg-hover: var(--primary-color-dark);
+            --button-secondary-bg: #6c757d; /* Grey for back button */
+            --button-secondary-bg-hover: #5a6268;
+
+            /* Form element colors */
+            --form-label-color: var(--text-color-dark);
+            --form-input-border: #ccc;
+            --form-input-focus-border: var(--primary-color);
+            --form-input-focus-shadow: rgba(90, 103, 216, 0.3); /* Primary color glow */
+            --form-placeholder-color: #999;
+
+            /* Excel upload colors */
+            --excel-upload-bg: #f9fafb; /* Light grey background */
+            --excel-upload-border: #d1d5db; /* Light grey border */
+            --excel-upload-hover-bg: #f3f4f6; /* Slightly darker grey on hover */
+            --excel-upload-icon-color: #9ca3af; /* Grey icon */
+            --excel-upload-text-color: #6b7280; /* Grey text */
+            --excel-upload-link-color: var(--text-color-dark); /* Dark text for link */
+            --excel-upload-hint-color: #a1a1aa; /* Lighter grey hint */
+            --excel-upload-mobile-hint-color: #ef4444; /* Red for mobile hint */
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif; /* Use Poppins */
+            background: linear-gradient(to bottom right, var(--background-color), #e2e8f0); /* Consistent subtle gradient */
+            margin: 0;
+            padding: var(--spacing-md); /* Consistent padding */
+            color: var(--text-color-light); /* Default text color using variable */
+            line-height: 1.6;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color-dark); /* Ensure headings use the dark text color variable */
+            font-weight: 700; /* Consistent bold weight for headings */
+            margin-top: 0;
+        }
+
+        p {
+             color: var(--text-color-light); /* Ensure paragraphs use the light text color variable */
+        }
+
+        /* --- Layout --- */
+        .absolute.top-4.right-4 {
+             position: absolute;
+             top: var(--spacing-md); /* Consistent spacing */
+             right: var(--spacing-md); /* Consistent spacing */
+             z-index: 10; /* Ensure it's above other content */
+        }
+
+        .bg-white.p-8.rounded-xl.shadow-lg.w-full.max-w-md {
+             background-color: var(--card-background); /* White background */
+             padding: var(--spacing-md); /* Consistent padding */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             box-shadow: var(--shadow-medium); /* Consistent shadow */
+             width: 100%;
+             max-width: 400px; /* Consistent max-width */
+             border: 1px solid #eee; /* Light border */
+             box-sizing: border-box;
+        }
+
+
+        /* --- Components --- */
+
+        /* Style for the back button */
+        .absolute.top-4.right-4 a {
+             background-color: var(--button-secondary-bg); /* Use grey color variable */
+             color: white; /* White text for grey button */
+             padding: 10px 20px; /* Adjusted padding */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Consistent transition */
+             font-weight: 600; /* Consistent bold weight */
+             box-shadow: var(--shadow-light); /* Add a light shadow */
+             cursor: pointer;
+             border: none;
+             text-decoration: none;
+             font-family: 'Poppins', sans-serif;
+        }
+
+        .absolute.top-4.right-4 a:hover {
+             background-color: var(--button-secondary-bg-hover); /* Darker grey on hover */
+             box-shadow: var(--shadow-medium);
+        }
+
+
+        /* Style for the main heading */
+        .text-2xl.font-bold.mb-6.text-center {
+             font-size: 2.2rem; /* Consistent heading size */
+             font-weight: 700; /* Consistent bold weight */
+             text-align: center;
+             color: var(--text-color-dark); /* Use dark text color variable */
+             margin-bottom: var(--spacing-lg); /* Consistent spacing below heading */
+             border-bottom: 2px solid var(--primary-color); /* Add primary color underline */
+             padding-bottom: var(--spacing-xs); /* Add padding below underline */
+        }
+
+        /* Style for form labels */
+        .block.text-sm.font-medium.text-gray-700 {
+             display: block;
+             font-size: 0.95em; /* Adjusted font size */
+             font-weight: 600; /* Consistent bold weight */
+             color: var(--form-label-color); /* Use dark text color variable */
+             margin-bottom: var(--spacing-xs); /* Consistent spacing */
+        }
+
+        /* Style for form inputs and selects */
+        .mt-1.block.w-full.px-3.py-2.border.border-gray-300.rounded-md.shadow-sm {
+             margin-top: var(--spacing-xs); /* Consistent spacing */
+             display: block;
+             width: 100%;
+             padding: 10px 12px; /* Adjusted padding */
+             border: 1px solid var(--form-input-border); /* Consistent border */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             box-shadow: var(--shadow-light); /* Consistent shadow */
+             box-sizing: border-box;
+             font-size: 1em;
+             color: var(--text-color-dark); /* Dark text color */
+             line-height: 1.5;
+             font-family: 'Poppins', sans-serif;
+             transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        /* Style for input/select focus state */
+         .mt-1.block.w-full.px-3.py-2.border.border-gray-300.rounded-md.shadow-sm:focus {
+             outline: none;
+             border-color: var(--form-input-focus-border); /* Primary color border */
+             box-shadow: 0 0 0 3px var(--form-input-focus-shadow); /* Primary color glow */
+         }
+
+        /* Style for placeholder text */
+         .mt-1.block.w-full.px-3.py-2.border.border-gray-300.rounded-md.shadow-sm::placeholder {
+             color: var(--form-placeholder-color); /* Grey placeholder color */
+         }
+
+
+        /* Style for the Excel upload section */
+        .hidden.md\:block > div { /* Target the container div within the Excel upload section */
+             margin-top: var(--spacing-sm); /* Consistent spacing above Excel section */
+        }
+
+        /* Style for the Excel upload drag-and-drop area */
+        .flex.flex-col.items-center.justify-center.w-full.h-32.border-2.border-dashed.rounded-lg.cursor-pointer.bg-gray-50.hover\:bg-gray-100.border-gray-300.transition {
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+             justify-content: center;
+             width: 100%;
+             height: 128px; /* Keep height */
+             border: 2px dashed var(--excel-upload-border); /* Use variable border */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             cursor: pointer;
+             background-color: var(--excel-upload-bg); /* Use variable background */
+             transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+
+        .flex.flex-col.items-center.justify-center.w-full.h-32.border-2.border-dashed.rounded-lg.cursor-pointer.bg-gray-50.hover\:bg-gray-100.border-gray-300.transition:hover {
+             background-color: var(--excel-upload-hover-bg); /* Use variable hover background */
+             border-color: var(--primary-color); /* Primary color border on hover */
+        }
+
+        /* Style for the icon within the Excel upload area */
+        .flex.flex-col.items-center.justify-center.w-full.h-32.border-2.border-dashed.rounded-lg.cursor-pointer.bg-gray-50.hover\:bg-gray-100.border-gray-300.transition svg {
+             width: 32px; /* Consistent icon size */
+             height: 32px;
+             margin-bottom: var(--spacing-xs); /* Consistent spacing below icon */
+             color: var(--excel-upload-icon-color); /* Use variable icon color */
+        }
+
+        /* Style for the text within the Excel upload area */
+        .flex.flex-col.items-center.justify-center.w-full.h-32.border-2.border-dashed.rounded-lg.cursor-pointer.bg-gray-50.hover\:bg-gray-100.border-gray-300.transition p {
+             margin-bottom: var(--spacing-xs); /* Consistent spacing below paragraphs */
+             font-size: 0.9em; /* Adjusted font size */
+             color: var(--excel-upload-text-color); /* Use variable text color */
+        }
+
+        .flex.flex-col.items-center.justify-center.w-full.h-32.border-2.border-dashed.rounded-lg.cursor-pointer.bg-gray-50.hover\:bg-gray-100.border-gray-300.transition p span.font-semibold {
+             font-weight: 600; /* Consistent bold weight */
+             color: var(--excel-upload-link-color); /* Use variable link color */
+        }
+
+        .flex.flex-col.items-center.justify-center.w-full.h-32.border-2.border-dashed.rounded-lg.cursor-pointer.bg-gray-50.hover\:bg-gray-100.border-gray-300.transition p:last-of-type {
+             font-size: 0.8em; /* Adjusted font size */
+             color: var(--excel-upload-hint-color); /* Use variable hint color */
+             margin-bottom: 0; /* No bottom margin on last paragraph */
+        }
+
+
+        /* Style for the mobile hint text */
+        .md\:hidden.mt-2.text-red-600.text-sm.text-center.font-medium {
+             margin-top: var(--spacing-sm); /* Consistent spacing */
+             color: var(--excel-upload-mobile-hint-color); /* Use variable red color */
+             font-size: 0.85em; /* Adjusted font size */
+             text-align: center;
+             font-weight: 600; /* Consistent bold weight */
+        }
+
+
+        /* Style for the submit button */
+        .w-full.bg-blue-500.hover\:bg-blue-600.text-white.font-semibold.py-2.px-4.rounded-md {
+             width: 100%;
+             background-color: var(--button-primary-bg); /* Use primary color variable */
+             color: white;
+             font-weight: 600; /* Consistent bold weight */
+             padding: 10px 20px; /* Adjusted padding */
+             border-radius: var(--border-radius); /* Consistent border-radius */
+             transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Consistent transition */
+             box-shadow: var(--shadow-light); /* Add a light shadow */
+             cursor: pointer;
+             border: none;
+             font-family: 'Poppins', sans-serif;
+             margin-top: var(--spacing-md); /* Add space above button */
+        }
+
+        .w-full.bg-blue-500.hover\:bg-blue-600.text-white.font-semibold.py-2.px-4.rounded-md:hover {
+             background-color: var(--button-primary-bg-hover); /* Darker primary on hover */
+             box-shadow: var(--shadow-medium);
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-sm);
+            }
+            .absolute.top-4.right-4 {
+                 top: var(--spacing-sm);
+                 right: var(--spacing-sm);
+            }
+             .absolute.top-4.right-4 a {
+                 padding: 8px 15px;
+                 font-size: 0.9em;
+             }
+            .bg-white.p-8.rounded-xl.shadow-lg.w-full.max-w-md {
+                 padding: var(--spacing-sm);
+                 max-width: 95%; /* Allow wider on tablets */
+            }
+             .text-2xl.font-bold.mb-6.text-center {
+                 font-size: 1.8rem;
+                 margin-bottom: var(--spacing-lg);
+                 padding-bottom: var(--spacing-xs);
+             }
+             .block.text-sm.font-medium.text-gray-700 {
+                 font-size: 0.9em;
+                 margin-bottom: var(--spacing-xs);
+             }
+             .mt-1.block.w-full.px-3.py-2.border.border-gray-300.rounded-md.shadow-sm {
+                 padding: 8px 10px;
+                 font-size: 0.95em;
+                 margin-top: var(--spacing-xs);
+             }
+
+             .hidden.md\:block > div {
+                 margin-top: var(--spacing-sm);
+             }
+             .flex.flex-col.items-center.justify-center.w-full.h-32.border-2.border-dashed.rounded-lg.cursor-pointer.bg-gray-50.hover\:bg-gray-100.border-gray-300.transition svg {
+                 width: 28px;
+                 height: 28px;
+                 margin-bottom: var(--spacing-xs);
+             }
+             .flex.flex-col.items-center.justify-center.w-full.h-32.border-2.border-dashed.rounded-lg.cursor-pointer.bg-gray-50.hover\:bg-gray-100.border-gray-300.transition p {
+                 font-size: 0.85em;
+                 margin-bottom: var(--spacing-xs);
+             }
+             .flex.flex-col.items-center.justify-center.w-full.h-32.border-2.border-dashed.rounded-lg.cursor-pointer.bg-gray-50.hover\:bg-gray-100.border-gray-300.transition p:last-of-type {
+                 font-size: 0.75em;
+             }
+
+             .md\:hidden.mt-2.text-red-600.text-sm.text-center.font-medium {
+                 margin-top: var(--spacing-sm);
+                 font-size: 0.8em;
+             }
+
+             .w-full.bg-blue-500.hover\:bg-blue-600.text-white.font-semibold.py-2.px-4.rounded-md {
+                 padding: 8px 15px;
+                 font-size: 0.9em;
+                 margin-top: var(--spacing-md);
+             }
+        }
+
+         @media (max-width: 480px) {
+             body {
+                 padding: var(--spacing-xs);
+             }
+              .absolute.top-4.right-4 {
+                 top: var(--spacing-xs);
+                 right: var(--spacing-xs);
+             }
+              .absolute.top-4.right-4 a {
+                 padding: 6px 12px;
+                 font-size: 0.8em;
+             }
+              .bg-white.p-8.rounded-xl.shadow-lg.w-full.max-w-md {
+                 padding: var(--spacing-xs);
+                 max-width: 100%;
+             }
+             .text-2xl.font-bold.mb-6.text-center {
+                 font-size: 1.6rem;
+                 margin-bottom: var(--spacing-md);
+                 padding-bottom: var(--spacing-xs);
+             }
+              .block.text-sm.font-medium.text-gray-700 {
+                 font-size: 0.85em;
+                 margin-bottom: var(--spacing-xs);
+             }
+             .mt-1.block.w-full.px-3.py-2.border.border-gray-300.rounded-md.shadow-sm {
+                 padding: 6px 8px;
+                 font-size: 0.9em;
+                 margin-top: var(--spacing-xs);
+             }
+
+              .hidden.md\:block > div {
+                 margin-top: var(--spacing-sm);
+             }
+              .flex.flex-col.items-center.justify-center.w-full.h-32.border-2.border-dashed.rounded-lg.cursor-pointer.bg-gray-50.hover\:bg-gray-100.border-gray-300.transition svg {
+                 width: 24px;
+                 height: 24px;
+                 margin-bottom: var(--spacing-xs);
+             }
+              .flex.flex-col.items-center.justify-center.w-full.h-32.border-2.border-dashed.rounded-lg.cursor-pointer.bg-gray-50.hover\:bg-gray-100.border-gray-300.transition p {
+                 font-size: 0.8em;
+                 margin-bottom: var(--spacing-xs);
+             }
+              .flex.flex-col.items-center.justify-center.w-full.h-32.border-2.border-dashed.rounded-lg.cursor-pointer.bg-gray-50.hover\:bg-gray-100.border-gray-300.transition p:last-of-type {
+                 font-size: 0.7em;
+             }
+
+              .md\:hidden.mt-2.text-red-600.text-sm.text-center.font-medium {
+                 margin-top: var(--spacing-sm);
+                 font-size: 0.75em;
+             }
+
+              .w-full.bg-blue-500.hover\:bg-blue-600.text-white.font-semibold.py-2.px-4.rounded-md {
+                 padding: 6px 12px;
+                 font-size: 0.85em;
+                 margin-top: var(--spacing-md);
+             }
+         }
+
+    </style>
+    <script>
+        var branchesData = `{{ branches|tojson|safe }}`;
+        var branches = JSON.parse(branchesData);
+        var error_in_pyton = "{{ error }}";
+        if(error_in_pyton) {
+            alert(error_in_pyton); // Consider replacing alert with a modal for better UX
+        }
+
+        function onselectedchange_semester(){
+            var selected_semester = document.getElementById("semester").value;
+            branch_ddl_values = []
+            for(let i=0; i < branches.length; i++){
+            if(branches[i].SemesterID == selected_semester){
+                var branch = branches[i];
+                branch_ddl_values.push(branch);
+            }
+            }
+            populateBranchDropdown(branch_ddl_values);
+        }
+
+        function populateBranchDropdown(branchList) {
+            const branchSelect = document.getElementById('branch');
+            branchSelect.innerHTML = '<option value="0" disabled selected>Select branch</option>';
+            branchList.forEach(branch => {
+                const option = document.createElement('option');
+                option.value = branch.BranchID;
+                option.textContent = branch.BranchName;
+                branchSelect.appendChild(option);
+            });
+        }
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+    {# Back button #}
+    <div class="absolute top-4 right-4">
+        <a href="{{ url_for('back_teacher') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
+            Back
+        </a>
+    </div>
+
+    {# Main registration card container #}
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        {# Main heading #}
+        <h2 class="text-2xl font-bold mb-6 text-center">Student Register</h2>
+        <form method="POST" action="{{ url_for('student_register') }}" enctype="multipart/form-data" class="space-y-5">
+
+            {# Username input #}
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Username</label>
+                <input name="name" placeholder="Enter name"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+            </div>
+
+            {# Batch select #}
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Batch</label>
+                <select name="initials"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm">
+                    <option value="S2021-">2025 passouts</option>
+                    <option value="S2022-">2026 passouts</option>
+                    <option value="S2023-">2027 passouts</option>
+                    <option value="S2024-">2028 passouts</option>
+                    <option value="S2025-">2029 passouts</option>
+                </select>
+            </div>
+
+            {# Semester select #}
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Semester</label>
+                <select name="semester" id="semester"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm"
+                        onchange="onselectedchange_semester()">
+                    <option value="0" disabled selected>Select semester</option>
+                    {% for sem in semesters %}
+                        <option value="{{ sem.SemesterID }}">{{ sem.SemesterName }} semester</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            {# Branch select #}
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Branch</label>
+                <select name="branch" id="branch"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm">
+                    <option value="0" disabled selected>Select branch</option>
+                </select>
+            </div>
+
+            {# Password input #}
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Password</label>
+                <input name="password" type="password" placeholder="Enter password"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+            </div>
+
+            {# Excel Upload Section (Desktop Only) #}
+            <div>
+                <div class="hidden md:block">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Or Upload Excel</label>
+                    <div class="flex items-center justify-center w-full">
+                        <label for="excel_file"
+                               class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 border-gray-300 transition">
+
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                <svg class="w-8 h-8 mb-2 text-gray-400" fill="none" stroke="currentColor" stroke-width="2"
+                                     viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M7 16V4m0 0L3 8m4-4l4 4m5 4v8m0 0l4-4m-4 4l-4-4" />
+                                </svg>
+                                <p class="mb-1 text-sm text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                                <p class="text-xs text-gray-400">Excel files only (.xlsx, .xls)</p>
+                            </div>
+
+                            <input id="excel_file" name="excel_file" type="file" accept=".xlsx,.xls" class="hidden" />
+                        </label>
+                    </div>
+                </div>
+
+                {# Mobile Hint for Excel Upload #}
+                <div class="md:hidden mt-2 text-red-600 text-sm text-center font-medium">
+                    Excel upload is only available on desktop. Please use a PC or laptop. If it throws error don't cry 😑🤷🏻
+                </div>
+            </div>
+
+            {# Register Submit Button #}
+            <button type="submit"
+                    class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
+                Register
+            </button>
+        </form>
+    </div>
+</body>
+</html>
